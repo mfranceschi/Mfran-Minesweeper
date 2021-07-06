@@ -8,5 +8,5 @@ Created on Tue Jul  6 23:45:05 2021
 import pytest
 import grid_v1
 
-def test_magic_number():
-    assert grid_v1.Grid_V1().magic_number == 42
+def test_game_is_running():
+    assert grid_v1.Grid_V1().game_is_running == False
