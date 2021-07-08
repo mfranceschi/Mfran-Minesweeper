@@ -36,11 +36,12 @@ class Grid:
         # TODO using a list might not be ideal for perfs. To be profiled?
         self.grid = [ [ Cell(x, y, False) for x in range(grid_x)] for y in range(grid_y)]
 
-    def __getitem__(self, x, y):
+    def __getitem__(self, coord_xy):
+        x, y = coord_xy
         return self.get_cell(x, y)
     
     def get_cell(self, x: int, y: int) -> Cell:
-        return self.grid[x][y]
+        return self.grid[y][x]
 
     def get_neighbours(self, x: int, y: int) -> List[int]:
         neighbours = []
@@ -50,34 +51,34 @@ class Grid:
         if x != 0:
             # Top left
             if y != 0:
-                neighbours.append(self.grid[x-1][y-1])
+                neighbours.append(self[x-1, y-1])
 
             # Left
-            neighbours.append(self.grid[x-1][y])
+            neighbours.append(self[x-1, y])
 
             # Bottom left
             if y != max_y:
-                neighbours.append(self.grid[x-1][y+1])
+                neighbours.append(self[x-1, y+1])
         
         # Top
         if y != 0:
-            neighbours.append(self.grid[x][y-1])
+            neighbours.append(self[x, y-1])
 
         # Bottom
         if y != max_y:
-            neighbours.append(self.grid[x][y+1])
+            neighbours.append(self[x, y+1])
 
         if x != max_x:
             # Top right
             if y != 0:
-                neighbours.append(self.grid[x+1][y-1])
+                neighbours.append(self[x+1, y-1])
 
             # Right
-            neighbours.append(self.grid[x+1][y])
+            neighbours.append(self[x+1, y])
 
             # Bottom right
             if y != max_y:
-                neighbours.append(self.grid[x+1][y+1])
+                neighbours.append(self[x+1, y+1])
         
         return neighbours
 
