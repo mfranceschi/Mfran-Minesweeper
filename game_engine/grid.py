@@ -9,10 +9,10 @@ from typing import Iterable, List
 
 
 class Cell:
-    def __init__(self, x, y, has_mine: bool):
+    def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.has_mine = has_mine
+        self.has_mine = False
         self.is_flagged = False
         self.is_revealed = False
 
@@ -34,14 +34,19 @@ class Grid:
         self.dim = Dimension2D(grid_x, grid_y)
 
         # TODO using a list might not be ideal for perfs. To be profiled?
-        self.grid = [ [ Cell(x, y, False) for x in range(grid_x)] for y in range(grid_y)]
+        self.grid = [[Cell(x, y) for x in range(grid_x)] for y in range(grid_y)]
+
+    def _get_cell_or_raise(self, x: int, y: int) -> Cell:
+        assert 0 <= x < self.dim.x
+        assert 0 <= y < self.dim.y
+        return self.grid[y][x]
 
     def __getitem__(self, coord_xy):
         x, y = coord_xy
-        return self.get_cell(x, y)
+        return self._get_cell(x, y)
     
-    def get_cell(self, x: int, y: int) -> Cell:
-        return self.grid[y][x]
+    def _get_cell(self, x: int, y: int) -> Cell:
+        return self._get_cell_or_raise(x, y)
 
     def get_neighbours(self, x: int, y: int) -> List[int]:
         neighbours = []
@@ -83,13 +88,13 @@ class Grid:
         return neighbours
 
     def set_cell_flagged(self, cell_x: int, cell_y: int, flagged: bool) -> None:
-        self.get_cell(cell_x, cell_y).is_flagged = flagged
+        self._get_cell(cell_x, cell_y).is_flagged = flagged
 
     def set_cell_revealed(self, cell_x: int, cell_y: int, revealed: bool):
-        self.get_cell(cell_x, cell_y).is_revealed = revealed
+        self._get_cell(cell_x, cell_y).is_revealed = revealed
 
     def get_cell_has_mine(self, cell_x: int, cell_y: int)->bool:
-        return self.get_cell(cell_x, cell_y).has_mine
+        return self._get_cell(cell_x, cell_y).has_mine
 
     def __iter__(self) -> Iterable:
         return (cell for line in self.grid for cell in line)
