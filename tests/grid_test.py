@@ -5,8 +5,9 @@ Created on Tue Jul  6 23:45:05 2021
 @author: Utilisateur
 """
 
+from typing import List, Tuple
 import pytest
-from game_engine.grid import Grid
+from game_engine.grid import Cell, Grid
 
 
 @pytest.fixture
@@ -20,6 +21,15 @@ def test_dimensions(my_grid: Grid):
 
 
 class TestGetNeighbours:
+    @classmethod
+    def check_list_of_cells(cls, list_to_review: List[Cell], cells_to_look_for: List[Tuple[int, int]], check_len: bool = True):
+        if check_len:
+            assert len(list_to_review) == len(cells_to_look_for), "Invalid amount of neighbours"
+        
+        for cell in cells_to_look_for:
+            x, y = cell[0], cell[1]
+            assert any(cell_from_list for cell_from_list in list_to_review if cell_from_list.x == x and cell_from_list.y == y), f"Unable to find cell of coordinates (x={x}, y={y}) within the list of neighbours"
+
     def test_raises_error_if_out_of_range(self, my_grid: Grid):
         # Negative values
         with pytest.raises(AssertionError):
@@ -45,22 +55,20 @@ class TestGetNeighbours:
         with pytest.raises(AssertionError):
             my_grid.get_neighbours(my_grid.dim.x + 4, my_grid.dim.y + 4)
 
-
-    def test_for_corners(self, my_grid):
+    def test_for_corners(self, my_grid: Grid):
         # Top left
-        assert len(my_grid.get_neighbours(0, 0)) == 3
+        self.check_list_of_cells(my_grid.get_neighbours(0, 0), [(0, 1), (1, 0), (1, 1)])
 
         # Bottom left
-        assert len(my_grid.get_neighbours(0, 6)) == 3
+        self.check_list_of_cells(my_grid.get_neighbours(0, 6), [(0, 5), (1, 6), (1, 5)])
 
         # Top right
-        assert len(my_grid.get_neighbours(4, 0)) == 3
+        self.check_list_of_cells(my_grid.get_neighbours(4, 0), [(3, 0), (4, 1), (3, 1)])
 
         # Bottom right
-        assert len(my_grid.get_neighbours(4, 6)) == 3
+        self.check_list_of_cells(my_grid.get_neighbours(4, 6), [(3, 6), (4, 5), (3, 6)])
 
-
-    def test_for_sides(self, my_grid):
+    def test_for_sides(self, my_grid: Grid):
         # Top
         assert len(my_grid.get_neighbours(2, 0)) == 5
 
@@ -72,6 +80,11 @@ class TestGetNeighbours:
 
         # Right
         assert len(my_grid.get_neighbours(4, 2)) == 5
+
+    def test_all_other_cells(self, my_grid: Grid):
+        for x in range(1, my_grid.dim.x - 1):
+            for y in range(1, my_grid.dim.y - 1):
+                assert len(my_grid.get_neighbours(x,y)) == 8
 
 
 def test_subscript(my_grid):
