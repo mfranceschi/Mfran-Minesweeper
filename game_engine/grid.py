@@ -17,11 +17,12 @@ class Cell:
         self.is_revealed = False
 
     def __repr__(self) -> str:
-        return f"Cell[x={self.x},y={self.y},has_mine={self.has_mine},is_flagged={self.is_flagged}"
+        return f"Cell[x={self.x},y={self.y}," + \
+            f"has_mine={self.has_mine},is_flagged={self.is_flagged}"
 
 
 class Dimension2D:
-    def __init__(self,x: int, y: int) -> None:
+    def __init__(self, x: int, y: int) -> None:
         self.x = x
         self.y = y
 
@@ -34,7 +35,8 @@ class Grid:
         self.dim = Dimension2D(grid_x, grid_y)
 
         # TODO using a list might not be ideal for perfs. To be profiled?
-        self.grid = [[Cell(x, y) for x in range(grid_x)] for y in range(grid_y)]
+        self.grid = [[Cell(x, y) for x in range(grid_x)]
+                     for y in range(grid_y)]
 
     def _get_cell_or_raise(self, x: int, y: int) -> Cell:
         assert 0 <= x < self.dim.x
@@ -44,7 +46,7 @@ class Grid:
     def __getitem__(self, coord_xy):
         x, y = coord_xy
         return self._get_cell(x, y)
-    
+
     def _get_cell(self, x: int, y: int) -> Cell:
         return self._get_cell_or_raise(x, y)
 
@@ -64,7 +66,7 @@ class Grid:
             # Bottom left
             if y != max_y:
                 neighbours.append(self[x-1, y+1])
-        
+
         # Top
         if y != 0:
             neighbours.append(self[x, y-1])
@@ -84,7 +86,7 @@ class Grid:
             # Bottom right
             if y != max_y:
                 neighbours.append(self[x+1, y+1])
-        
+
         return neighbours
 
     def set_cell_flagged(self, cell_x: int, cell_y: int, flagged: bool) -> None:
@@ -93,7 +95,7 @@ class Grid:
     def set_cell_revealed(self, cell_x: int, cell_y: int, revealed: bool):
         self._get_cell(cell_x, cell_y).is_revealed = revealed
 
-    def get_cell_has_mine(self, cell_x: int, cell_y: int)->bool:
+    def get_cell_has_mine(self, cell_x: int, cell_y: int) -> bool:
         return self._get_cell(cell_x, cell_y).has_mine
 
     def __iter__(self) -> Iterable:

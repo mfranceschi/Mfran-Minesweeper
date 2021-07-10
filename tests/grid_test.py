@@ -22,13 +22,22 @@ def test_dimensions(my_grid: Grid):
 
 class TestGetNeighbours:
     @classmethod
-    def check_list_of_cells(cls, list_to_review: List[Cell], cells_to_look_for: List[Tuple[int, int]], check_len: bool = True):
+    def check_list_of_cells(
+            cls,
+            list_to_review: List[Cell],
+            cells_to_look_for: List[Tuple[int, int]],
+            check_len: bool = True):
         if check_len:
-            assert len(list_to_review) == len(cells_to_look_for), "Invalid amount of neighbours"
-        
+            assert \
+                len(list_to_review) == len(cells_to_look_for), \
+                "Invalid amount of neighbours"
+
         for cell in cells_to_look_for:
             x, y = cell[0], cell[1]
-            assert any(cell_from_list for cell_from_list in list_to_review if cell_from_list.x == x and cell_from_list.y == y), f"Unable to find cell of coordinates (x={x}, y={y}) within the list of neighbours"
+            assert \
+                any(cell_from_list for cell_from_list in list_to_review if cell_from_list.x == x and cell_from_list.y ==
+                    y), \
+                f"Unable to find cell of coordinates (x={x}, y={y}) within the list of neighbours"
 
     def test_raises_error_if_out_of_range(self, my_grid: Grid):
         # Negative values
@@ -38,7 +47,7 @@ class TestGetNeighbours:
             my_grid.get_neighbours(0, -1)
         with pytest.raises(AssertionError):
             my_grid.get_neighbours(-4, -4)
-        
+
         # Equal to grid size
         with pytest.raises(AssertionError):
             my_grid.get_neighbours(my_grid.dim.x, 0)
@@ -57,34 +66,65 @@ class TestGetNeighbours:
 
     def test_for_corners(self, my_grid: Grid):
         # Top left
-        self.check_list_of_cells(my_grid.get_neighbours(0, 0), [(0, 1), (1, 0), (1, 1)])
+        self.check_list_of_cells(
+            my_grid.get_neighbours(0, 0),
+            [(0, 1), (1, 0), (1, 1)]
+        )
 
         # Bottom left
-        self.check_list_of_cells(my_grid.get_neighbours(0, 6), [(0, 5), (1, 6), (1, 5)])
+        self.check_list_of_cells(
+            my_grid.get_neighbours(0, 6),
+            [(0, 5), (1, 6), (1, 5)]
+        )
 
         # Top right
-        self.check_list_of_cells(my_grid.get_neighbours(4, 0), [(3, 0), (4, 1), (3, 1)])
+        self.check_list_of_cells(
+            my_grid.get_neighbours(4, 0),
+            [(3, 0), (4, 1), (3, 1)]
+        )
 
         # Bottom right
-        self.check_list_of_cells(my_grid.get_neighbours(4, 6), [(3, 6), (4, 5), (3, 6)])
+        self.check_list_of_cells(
+            my_grid.get_neighbours(4, 6),
+            [(3, 6), (4, 5), (3, 6)]
+        )
 
     def test_for_sides(self, my_grid: Grid):
         # Top
-        assert len(my_grid.get_neighbours(2, 0)) == 5
+        self.check_list_of_cells(
+            my_grid.get_neighbours(2, 0),
+            [(1, 0), (1, 1), (2, 1), (3, 0), (3, 1)]
+        )
 
         # Left
-        assert len(my_grid.get_neighbours(0, 2)) == 5
+        self.check_list_of_cells(
+            my_grid.get_neighbours(0, 2),
+            [(0, 1), (0, 3), (1, 1), (1, 2), (1, 3)]
+        )
 
         # Bottom
-        assert len(my_grid.get_neighbours(2, 6)) == 5
+        self.check_list_of_cells(
+            my_grid.get_neighbours(2, 6),
+            [(1, 5), (1, 6), (2, 5), (3, 5), (3, 6)]
+        )
 
         # Right
-        assert len(my_grid.get_neighbours(4, 2)) == 5
+        self.check_list_of_cells(
+            my_grid.get_neighbours(4, 2),
+            [(3, 1), (3, 2), (3, 3), (4, 1), (4, 3)]
+        )
 
     def test_all_other_cells(self, my_grid: Grid):
         for x in range(1, my_grid.dim.x - 1):
             for y in range(1, my_grid.dim.y - 1):
-                assert len(my_grid.get_neighbours(x,y)) == 8
+                self.check_list_of_cells(
+                    my_grid.get_neighbours(x, y),
+                    [
+                        (x-1, y-1), (x, y-1), (x+1, y-1),
+                        (x-1, y), (x+1, y),
+                        (x-1, y+1), (x, y+1), (x+1, y+1),
+                    ]
+                )
 
 
 def test_subscript(my_grid):

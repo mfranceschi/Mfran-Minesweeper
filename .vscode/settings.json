@@ -1,0 +1,14 @@
+{
+    // Python linting: pylint
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+
+    // File saving: format + lint + insert final newline.
+    "editor.formatOnSave": true,
+    "files.insertFinalNewline": true,
+    "python.linting.lintOnSave": true,
+
+    // Auto-save files each 10 seconds
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 10000
+}
