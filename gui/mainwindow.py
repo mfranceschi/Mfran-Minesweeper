@@ -1,3 +1,4 @@
+from grid import MinesweeperGridWidget
 import tkinter as tk
 
 
@@ -10,7 +11,8 @@ class MainWindow():
                              width=WIN_WIDTH, bg="yellow")
         top_frame.pack(fill=tk.X)
 
-        grid_frame = tk.Frame(master=parent, height=WIN_WIDTH, bg="red")
+        grid_frame = MinesweeperGridWidget(
+            master=parent, height=WIN_WIDTH, bg="red")
         grid_frame.pack(fill=tk.X)
 
         bottom_frame = tk.Frame(master=parent, height=30, bg="blue")
