@@ -28,7 +28,8 @@ class MainWindow():
 
             size_x=grid_x,
             size_y=grid_y,
-            on_click=self.on_click_on_cell
+            on_left_click=self.on_left_click_on_cell,
+            on_right_click=self.on_right_click_on_cell
         )
         self.grid_frame.pack(fill=tk.X)
 
@@ -38,8 +39,12 @@ class MainWindow():
     def set_grid(self, grid: List[str]) -> None:
         self.grid_frame.set_grid(grid)
 
-    def on_click_on_cell(self, x, y):
+    def on_left_click_on_cell(self, x, y):
         self.game_engine.reveal_cell(x, y)
+        self.set_grid(self.game_engine.get_grid_for_display())
+
+    def on_right_click_on_cell(self, x, y):
+        self.game_engine.toggle_flag_cell(x, y)
         self.set_grid(self.game_engine.get_grid_for_display())
 
 
