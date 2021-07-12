@@ -98,5 +98,5 @@ class Grid:
     def get_cell_has_mine(self, cell_x: int, cell_y: int) -> bool:
         return self._get_cell(cell_x, cell_y).has_mine
 
-    def __iter__(self) -> Iterable:
+    def __iter__(self) -> Iterable[Cell]:
         return (cell for line in self.grid for cell in line)
