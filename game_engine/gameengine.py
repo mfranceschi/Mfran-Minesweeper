@@ -6,7 +6,7 @@ Created on Tue Jul  6 23:43:41 2021
 """
 
 from .grid import Grid
-from typing import Callable
+from typing import Callable, List
 
 
 class GameEngine:
@@ -32,3 +32,18 @@ class GameEngine:
 
     def reveal_cell(self, cell_x: int, cell_y: int):
         self._grid.set_cell_revealed(cell_x, cell_y, True)
+
+    def get_grid_for_display(self) -> List[str]:
+        cells = []
+        for cell in self._grid:
+            if cell.is_revealed:
+                if cell.has_mine:
+                    cells.append("M")
+                else:
+                    neighbours = self.get_nb_of_close_mines(cell.x, cell.y)
+                    cells.append(str(neighbours))
+            elif cell.is_flagged:
+                cells.append("F")
+            else:
+                cells.append(".")
+        return cells

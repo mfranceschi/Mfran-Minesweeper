@@ -1,29 +1,45 @@
 import tkinter as tk
 from functools import partial
-from typing import List, Tuple, Union
+from typing import Callable, List
 
 
 class MinesweeperGridWidget(tk.Frame):
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(
+            self,
+            size_x=5, size_y=5,
+            on_click: Callable[[int, int], None] = None,
+            *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.grid_to_display: List[List[Union[int, str]]] = [
-            [0, 0, 0, ],
-            [1, 2, 1, ],
-            ["BOMB", 2, "BOMB"],
-        ]
-        self.buttons: List[List[tk.Button]] = []
+        self.size_x = size_x
+        self.size_y = size_y
+        self.on_click = on_click
 
-        for y, line in enumerate(self.grid_to_display):
-            self.buttons.append([])
-            for x, cell in enumerate(line):
-                button = tk.Button(master=self, text=str(
-                    cell), bg="purple", command=partial(handle_button_click, self, x, y))
+        self.grid_to_display: List[str] = ["0"] * (size_x * size_y)
+        self.buttons: List[tk.Button] = [None] * len(self.grid_to_display)
+
+        for y in range(self.size_y):
+            for x in range(self.size_x):
+                button = tk.Button(
+                    master=self,
+                    text=self._get_at_index(x, y, self.grid_to_display),
+                    bg="purple",
+                    command=partial(self.on_click, x, y)
+                )
                 button.grid(row=y, column=x)
-                self.buttons[y].append(button)
+                self._set_at_index(x, y, self.buttons, button)
 
+    def _get_at_index(self, x: int, y: int, array: list):
+        return array[y * self.size_x + x]
 
-def handle_button_click(frame: MinesweeperGridWidget, x, y):
-    print(f"CLICK {x=} {y=}")
-    button = frame.buttons[y][x]
-    button.configure(
-        bg="purple" if button["background"] == "yellow" else "yellow")
+    def _set_at_index(self, x: int, y: int, array: list, value):
+        array[y * self.size_x + x] = value
+
+    def handle_button_click(self, x, y):
+        print(f"CLICK {x=} {y=}")
+        button = self._get_at_index(x, y, self.buttons)
+        button.configure(
+            bg="purple" if button["background"] == "yellow" else "yellow")
+
+    def set_grid(self, grid: List[str]) -> None:
+        for i, value in enumerate(grid):
+            self.buttons[i].configure(text=value)
