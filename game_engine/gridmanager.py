@@ -9,7 +9,7 @@ from .grid import Cell, Grid
 from typing import Callable, List
 
 
-class GameEngine:
+class GridManager:
     def __init__(self, grid_x: int = 10, grid_y: int = 10):
         self._grid = Grid(grid_x, grid_y)
         self.nbr_mines = 0
