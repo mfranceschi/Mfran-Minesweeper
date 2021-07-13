@@ -92,7 +92,7 @@ class Grid:
     def set_cell_flagged(self, cell_x: int, cell_y: int, flagged: bool) -> None:
         self._get_cell(cell_x, cell_y).is_flagged = flagged
 
-    def set_cell_revealed(self, cell_x: int, cell_y: int, revealed: bool):
+    def set_cell_revealed(self, cell_x: int, cell_y: int, revealed: bool) -> None:
         self._get_cell(cell_x, cell_y).is_revealed = revealed
 
     def get_cell_has_mine(self, cell_x: int, cell_y: int) -> bool:

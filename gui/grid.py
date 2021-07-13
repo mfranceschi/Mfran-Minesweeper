@@ -57,10 +57,10 @@ class MinesweeperGridWidget(tk.Frame):
         for i, value in enumerate(grid):
             b = self.buttons[i]
             if value == "0":
-                b.configure(bg="grey", text=" ")
+                b.configure(bg="grey", text=" ", state="disabled")
             elif value == "F":
                 b.configure(bg="yellow", text=" ")
             elif value == "M":
                 b.configure(bg="red", text=" ")
             else:
-                b.configure(bg='purple', text=value)
+                b.configure(bg='purple', text=value, state="normal")

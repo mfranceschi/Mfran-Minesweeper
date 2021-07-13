@@ -51,3 +51,11 @@ class GridManager:
         for cell in self._grid:
             cells.append(self._cell_to_string(cell))
         return cells
+
+    def get_cell_has_mine(self, cell_x: int, cell_y: int) -> bool:
+        return self._grid.get_cell_has_mine(cell_x, cell_y)
+
+    def reveal_all(self) -> List[str]:
+        for cell in self._grid:
+            cell.is_revealed = True
+        return self.get_grid_for_display()

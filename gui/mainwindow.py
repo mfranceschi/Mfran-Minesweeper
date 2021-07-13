@@ -1,5 +1,7 @@
+from gui.controls import ControlsWidget
+from controller.abstract_controller import AbstractController
 from game_engine.gridmanager import GridManager
-from typing import List
+from typing import Callable, List
 from .grid import MinesweeperGridWidget
 import tkinter as tk
 
@@ -8,11 +10,13 @@ WIN_WIDTH = 500
 
 
 class MainWindow():
-    def __init__(self, grid_x: int, grid_y: int,
-                 game_engine: GridManager = None,) -> None:
+    def __init__(
+            self,
+            grid_x: int, grid_y: int,
+            controller: AbstractController = None,) -> None:
         self.grid_x = grid_x
         self.grid_y = grid_y
-        self.game_engine = game_engine
+        self.controller = controller
 
         self.root = tk.Tk()
         self.root.title("Mfran Minesweeper!")
@@ -33,20 +37,20 @@ class MainWindow():
         )
         self.grid_frame.pack(fill=tk.X)
 
-        self.bottom_frame = tk.Frame(master=self.root, height=30, bg="blue")
+        self.bottom_frame = ControlsWidget(
+            master=self.root, height=30, bg="blue")
         self.bottom_frame.pack(fill=tk.X)
 
     def set_grid(self, grid: List[str]) -> None:
         self.grid_frame.set_grid(grid)
 
     def on_left_click_on_cell(self, x, y):
-        self.game_engine.reveal_cell(x, y)
-        self.set_grid(self.game_engine.get_grid_for_display())
+        self.set_grid(self.controller.on_left_click(x, y))
 
     def on_right_click_on_cell(self, x, y):
-        self.game_engine.toggle_flag_cell(x, y)
-        self.set_grid(self.game_engine.get_grid_for_display())
+        self.set_grid(self.controller.on_right_click(x, y))
 
+    def set_on_new_game(self, function: Callable[[], None]):
+        self.bottom_frame.new_game_button.configure(command=function)
 
-if __name__ == "__main__":
-    MainWindow().root.mainloop()
+    def on_new_game(self): pass
