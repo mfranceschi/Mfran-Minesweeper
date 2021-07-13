@@ -45,12 +45,10 @@ class MainWindow():
         self.grid_frame.set_grid(grid)
 
     def on_left_click_on_cell(self, x, y):
-        self.set_grid(self.controller.on_left_click(x, y))
+        self.controller.on_left_click(x, y)
 
     def on_right_click_on_cell(self, x, y):
-        self.set_grid(self.controller.on_right_click(x, y))
+        self.controller.on_right_click(x, y)
 
     def set_on_new_game(self, function: Callable[[], None]):
         self.bottom_frame.new_game_button.configure(command=function)
-
-    def on_new_game(self): pass
