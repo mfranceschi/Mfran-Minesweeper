@@ -14,14 +14,14 @@ class DifficultyLevel:
 
 
 class DifficultyLevels(Enum):
-    EASY = DifficultyLevel(nbr_mines=10, grid_x=10, grid_y=15)
+    EASY = DifficultyLevel(nbr_mines=30, grid_x=10, grid_y=15)
 
 
 class ControllerImpl(Controller):
     INITIAL_DIFFICULTY = DifficultyLevels.EASY
 
     def __init__(self) -> None:
-        self.main_window: GUI = None
+        self.gui: GUI = None
         self.difficulty: DifficultyLevel
         self.game_over: bool = False
         self.set_difficulty(self.INITIAL_DIFFICULTY.value)
@@ -30,25 +30,30 @@ class ControllerImpl(Controller):
         self.difficulty = level or self.difficulty
 
     def init_gui(self, gui: GUI) -> None:
-        self.main_window = gui
-        self.main_window.set_on_new_game(self.on_new_game)
+        self.gui = gui
+        self.gui.set_on_new_game(self.on_new_game)
         self.on_new_game()
 
     def on_left_click(self, x: int, y: int) -> None:
         self.grid_manager.reveal_cell(x, y)
         if self.grid_manager.get_cell_has_mine(x, y):
             self.game_over = True
-            self.main_window.set_grid(self.grid_manager.reveal_all())
+            self.gui.set_grid(self.grid_manager.reveal_all())
         else:
-            self.main_window.set_grid(self.grid_manager.get_grid_for_display())
+            self.gui.set_grid(self.grid_manager.get_grid_for_display())
 
     def on_right_click(self, x: int, y: int) -> None:
         self.grid_manager.toggle_flag_cell(x, y)
-        self.main_window.set_grid(self.grid_manager.get_grid_for_display())
+        self.gui.set_grid(self.grid_manager.get_grid_for_display())
 
     def on_new_game(self) -> None:
-        self.grid_manager = GridManager(
-            self.difficulty.grid_x, self.difficulty.grid_y)
+        grid_x = self.difficulty.grid_x
+        grid_y = self.difficulty.grid_y
+        nbr_mines = self.difficulty.nbr_mines
+
+        self.grid_manager = GridManager(grid_x, grid_y)
         self.grid_manager.fill_with_mines(
-            nbr_mines=self.difficulty.nbr_mines, procedure=RandomGridFiller(self.difficulty.grid_x, self.difficulty.grid_y))
-        self.main_window.set_grid(self.grid_manager.get_grid_for_display())
+            nbr_mines=nbr_mines,
+            procedure=RandomGridFiller(grid_x, grid_y)
+        )
+        self.gui.set_grid(self.grid_manager.get_grid_for_display())
