@@ -1,22 +1,10 @@
 from game_engine.fill_grid import RandomGridFiller
 from gui.gui import GUI
-from controller.controller import Controller
+from controller.controller import Controller, DifficultyLevel, DifficultyLevels
 from enum import Enum
-from typing import Union
+from typing import Optional, Union
 from game_engine.gridmanager import GridManager
-
-
-class DifficultyLevel:
-    def __init__(self, nbr_mines: int, grid_x: int, grid_y: int) -> None:
-        self.nbr_mines = nbr_mines
-        self.grid_x = grid_x
-        self.grid_y = grid_y
-
-
-class DifficultyLevels(Enum):
-    EASY = DifficultyLevel(nbr_mines=10, grid_x=8, grid_y=8)
-    INTERMEDIATE = DifficultyLevel(nbr_mines=40, grid_x=16, grid_y=16)
-    EXPERT = DifficultyLevel(nbr_mines=99, grid_x=16, grid_y=30)
+from overrides import overrides
 
 
 class ControllerImpl(Controller):
@@ -31,11 +19,12 @@ class ControllerImpl(Controller):
     def set_difficulty(self, level: DifficultyLevel):
         self.difficulty = level
 
+    @overrides
     def init_gui(self, gui: GUI) -> None:
         self.gui = gui
-        self.gui.set_on_new_game(self.on_new_game)
         self.on_new_game()
 
+    @overrides
     def on_left_click(self, x: int, y: int) -> None:
         self.grid_manager.reveal_cell(x, y)
         if self.grid_manager.get_cell_has_mine(x, y):
@@ -48,11 +37,16 @@ class ControllerImpl(Controller):
                 self.gui.set_grid(self.grid_manager.reveal_all())
                 self.gui.victory()
 
+    @overrides
     def on_right_click(self, x: int, y: int) -> None:
         self.grid_manager.toggle_flag_cell(x, y)
         self.gui.set_grid(self.grid_manager.get_grid_for_display())
 
-    def on_new_game(self) -> None:
+    @overrides
+    def on_new_game(self, difficulty_level: Optional[DifficultyLevel] = None) -> None:
+        if difficulty_level:
+            self.set_difficulty(difficulty_level)
+
         grid_x = self.difficulty.grid_x
         grid_y = self.difficulty.grid_y
         nbr_mines = self.difficulty.nbr_mines
@@ -62,8 +56,13 @@ class ControllerImpl(Controller):
             nbr_mines=nbr_mines,
             procedure=RandomGridFiller(grid_x, grid_y)
         )
+        self.gui.reset_grid_size(grid_x, grid_y)
         self.gui.set_grid(self.grid_manager.get_grid_for_display())
 
     def has_won(self) -> bool:
         has_won = self.difficulty.nbr_mines == self.grid_manager.get_count_of_not_revealed_cells()
         return has_won
+
+    @overrides
+    def get_nbr_mines(self) -> int:
+        return self.difficulty.nbr_mines

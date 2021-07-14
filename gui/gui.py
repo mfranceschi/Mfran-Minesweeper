@@ -1,11 +1,11 @@
-from typing import Callable
+from typing import Any, Callable, List
 
 
 class GUI:
-    def set_grid(self, *args, **kwargs):
+    def reset_grid_size(self, grid_x: int, grid_y: int) -> None:
         raise NotImplementedError()
 
-    def set_on_new_game(self, function: Callable[[], None]):
+    def set_grid(self, grid: List[str]) -> None:
         raise NotImplementedError()
 
     def victory(self) -> None:
