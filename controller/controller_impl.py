@@ -14,7 +14,7 @@ class DifficultyLevel:
 
 
 class DifficultyLevels(Enum):
-    EASY = DifficultyLevel(nbr_mines=30, grid_x=10, grid_y=15)
+    EASY = DifficultyLevel(nbr_mines=5, grid_x=10, grid_y=15)
 
 
 class ControllerImpl(Controller):

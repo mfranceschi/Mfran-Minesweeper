@@ -10,7 +10,7 @@ from typing import List
 
 
 class Cell:
-    def __init__(self, x, y):
+    def __init__(self, x: int, y: int):
         self.x = x
         self.y = y
         self.has_mine = False
@@ -48,7 +48,7 @@ class Grid:
         x, y = coord_xy
         return self._get_cell_or_raise(x, y)
 
-    def get_neighbours(self, x: int, y: int) -> List[int]:
+    def get_neighbours(self, x: int, y: int) -> List[Cell]:
         neighbours = []
         max_x = self.dim.x - 1
         max_y = self.dim.y - 1
