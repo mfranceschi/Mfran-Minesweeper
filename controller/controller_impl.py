@@ -1,3 +1,4 @@
+from time import time
 from game_engine.fill_grid import RandomGridFiller
 from gui.gui import GUI
 from controller.controller import Controller, DifficultyLevel, DifficultyLevels
@@ -15,6 +16,7 @@ class ControllerImpl(Controller):
         self.difficulty: DifficultyLevel
         self.game_over: bool = False
         self.set_difficulty(self.INITIAL_DIFFICULTY.value)
+        self.game_starting_time: float = time()
 
     def set_difficulty(self, level: DifficultyLevel):
         self.difficulty = level
@@ -59,6 +61,7 @@ class ControllerImpl(Controller):
         self.gui.reset_grid_size(grid_x, grid_y)
         self.gui.set_nbr_mines(nbr_mines)
         self.gui.set_grid(self.grid_manager.get_grid_for_display())
+        self.game_starting_time = time()
 
     def has_won(self) -> bool:
         has_won = self.difficulty.nbr_mines == self.grid_manager.get_count_of_not_revealed_cells()
@@ -67,3 +70,7 @@ class ControllerImpl(Controller):
     @overrides
     def get_nbr_mines(self) -> int:
         return self.difficulty.nbr_mines
+
+    @overrides
+    def get_game_starting_time(self) -> float:
+        return self.game_starting_time

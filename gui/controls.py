@@ -14,7 +14,6 @@ class NbrMinesLabel(tk.Label):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master=master, *args, **kwargs)
         self.grid(row=0, column=2, padx=20)
-        pass
 
     def _make_string_for_nbr_mines(self, nbr: int) -> str:
         return f"There are {nbr} mines!"
@@ -46,8 +45,14 @@ class DifficultyChoice(tk.Frame):
         self.on_new_difficulty(getattr(DifficultyLevels, choice).value)
 
 
+class ElapsedTimeLabel(tk.Label):
+    def __init__(self, master, text_variable: tk.StringVar, *args, **kwargs):
+        super().__init__(master=master, textvariable=text_variable, *args, **kwargs)
+        self.grid(row=0, column=4)
+
+
 class ControlsWidget(tk.Frame):
-    def __init__(self, controller: Controller, *args, **kwargs):
+    def __init__(self, controller: Controller, elapsed_time_text: tk.StringVar, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.configure(padx=15, pady=15, background="white")
 
@@ -59,6 +64,9 @@ class ControlsWidget(tk.Frame):
 
         self.difficulty_choice = DifficultyChoice(
             master=self, on_new_difficulty=controller.on_new_game)
+
+        self.elapsed_time_label = ElapsedTimeLabel(
+            master=self, text_variable=elapsed_time_text)
 
     def set_nbr_mines(self, nbr: int) -> None:
         self.nbr_mines_label.set_nbr_mines(nbr)

@@ -5,6 +5,7 @@ from typing import Callable, List
 from .grid import MinesweeperGridWidget
 import tkinter as tk
 from overrides import overrides
+import time
 
 WIN_WIDTH = 500
 
@@ -23,9 +24,13 @@ class GUIImpl(GUI):
 
         self.grid_frame = self._make_grid_widget(grid_x, grid_y)
 
+        self.elapsed_time_text = tk.StringVar(
+            master=self.root, value="")
+        self._update_elapsed_time_text()
         self.bottom_frame = ControlsWidget(
             master=self.root,
             controller=self.controller,
+            elapsed_time_text=self.elapsed_time_text,
             height=30,
             bg="blue"
         )
@@ -54,6 +59,13 @@ class GUIImpl(GUI):
         )
         widget.grid(column=0, row=0)
         return widget
+
+    def _update_elapsed_time_text(self):
+        elapsed_seconds = time.time() - self.controller.get_game_starting_time()
+        minutes, seconds = divmod(int(elapsed_seconds), 60)
+        self.elapsed_time_text.set(
+            f"Elapsed time: {f'{minutes}min ' if minutes else ''}{seconds}s")
+        self.root.after(800, self._update_elapsed_time_text)
 
     @overrides
     def reset_grid_size(self, grid_x: int, grid_y: int) -> None:
