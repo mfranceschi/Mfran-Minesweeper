@@ -16,3 +16,6 @@ class GUI:
 
     def game_over(self) -> None:
         raise NotImplementedError()
+
+    def game_starts(self) -> None:
+        raise NotImplementedError()

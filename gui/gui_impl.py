@@ -76,3 +76,15 @@ class GUIImpl(GUI):
     @overrides
     def set_nbr_mines(self, nbr_mines: int) -> None:
         self.bottom_frame.set_nbr_mines(nbr_mines)
+
+    @overrides
+    def victory(self) -> None:
+        self.root.configure(bg="green")
+
+    @overrides
+    def game_over(self) -> None:
+        self.root.configure(bg="brown")
+
+    @overrides
+    def game_starts(self) -> None:
+        self.root.configure(bg="sky blue")

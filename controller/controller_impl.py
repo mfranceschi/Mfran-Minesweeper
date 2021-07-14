@@ -61,6 +61,7 @@ class ControllerImpl(Controller):
         self.gui.reset_grid_size(grid_x, grid_y)
         self.gui.set_nbr_mines(nbr_mines)
         self.gui.set_grid(self.grid_manager.get_grid_for_display())
+        self.gui.game_starts()
         self.game_starting_time = time()
 
     def has_won(self) -> bool:
