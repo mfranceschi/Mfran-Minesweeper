@@ -26,6 +26,9 @@ class GridManager:
     def get_cell_has_mine(self, cell_x: int, cell_y: int) -> bool:
         return self._grid.get_cell_has_mine(cell_x, cell_y)
 
+    def get_count_of_not_revealed_cells(self) -> int:
+        return len([cell for cell in self._grid if not cell.is_revealed])
+
     def _cell_to_string(self, cell: Cell):
         if cell.is_revealed:
             if cell.has_mine:

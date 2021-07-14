@@ -14,7 +14,9 @@ class DifficultyLevel:
 
 
 class DifficultyLevels(Enum):
-    EASY = DifficultyLevel(nbr_mines=5, grid_x=10, grid_y=15)
+    EASY = DifficultyLevel(nbr_mines=10, grid_x=8, grid_y=8)
+    INTERMEDIATE = DifficultyLevel(nbr_mines=40, grid_x=16, grid_y=16)
+    EXPERT = DifficultyLevel(nbr_mines=99, grid_x=16, grid_y=30)
 
 
 class ControllerImpl(Controller):
@@ -26,8 +28,8 @@ class ControllerImpl(Controller):
         self.game_over: bool = False
         self.set_difficulty(self.INITIAL_DIFFICULTY.value)
 
-    def set_difficulty(self, level: Union[DifficultyLevel, None] = None):
-        self.difficulty = level or self.difficulty
+    def set_difficulty(self, level: DifficultyLevel):
+        self.difficulty = level
 
     def init_gui(self, gui: GUI) -> None:
         self.gui = gui
@@ -39,8 +41,12 @@ class ControllerImpl(Controller):
         if self.grid_manager.get_cell_has_mine(x, y):
             self.game_over = True
             self.gui.set_grid(self.grid_manager.reveal_all())
+            self.gui.game_over()
         else:
             self.gui.set_grid(self.grid_manager.get_grid_for_display())
+            if self.has_won():
+                self.gui.set_grid(self.grid_manager.reveal_all())
+                self.gui.victory()
 
     def on_right_click(self, x: int, y: int) -> None:
         self.grid_manager.toggle_flag_cell(x, y)
@@ -57,3 +63,7 @@ class ControllerImpl(Controller):
             procedure=RandomGridFiller(grid_x, grid_y)
         )
         self.gui.set_grid(self.grid_manager.get_grid_for_display())
+
+    def has_won(self) -> bool:
+        has_won = self.difficulty.nbr_mines == self.grid_manager.get_count_of_not_revealed_cells()
+        return has_won

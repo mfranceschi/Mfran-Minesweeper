@@ -7,3 +7,9 @@ class GUI:
 
     def set_on_new_game(self, function: Callable[[], None]):
         raise NotImplementedError()
+
+    def victory(self) -> None:
+        raise NotImplementedError()
+
+    def game_over(self) -> None:
+        raise NotImplementedError()

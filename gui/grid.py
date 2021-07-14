@@ -64,10 +64,10 @@ class MinesweeperGridWidget(tk.Frame):
                 b.configure(bg="yellow", text=" ", state="normal")
             elif value == "M":
                 # Revealed, mine
-                b.configure(bg="red", text=" ")
+                b.configure(bg="red", text=" ", state="disabled")
             elif value == " ":
                 # Not revealed, no flag
                 b.configure(bg="blue", text=" ", state="normal")
             else:
                 # Revealed, has neighbours
-                b.configure(bg='purple', text=value, state="normal")
+                b.configure(bg='purple', text=value, state="disabled")
