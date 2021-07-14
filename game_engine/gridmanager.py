@@ -5,20 +5,26 @@ Created on Tue Jul  6 23:43:41 2021
 @author: Utilisateur
 """
 
+from game_engine.fill_grid import fill_grid_dummy
 from .grid import Cell, Grid
 from typing import Callable, List
 
 
-class GameEngine:
+class GridManager:
     def __init__(self, grid_x: int = 10, grid_y: int = 10):
         self._grid = Grid(grid_x, grid_y)
         self.nbr_mines = 0
-        self.game_is_running = False
 
-    def fill_with_mines(self, nbr_mines: int = 3, procedure: Callable[[], None] = None):
-        # TODO better abstraction system
-        for i_cell in range(nbr_mines):
-            self._grid._get_cell(0, i_cell).has_mine = True
+    def fill_with_mines(
+            self,
+            nbr_mines: int = 3,
+            procedure: Callable[[Callable[[int, int], None], int], None] = fill_grid_dummy):
+        self.nbr_mines = nbr_mines
+
+        procedure(self._set_cell_has_mine, nbr_mines)
+
+        assert len([cell for cell in self._grid if cell.has_mine]) == self.nbr_mines, \
+            "Unexpected number of cells with a mine after filling the grid!"
 
     def get_nb_of_close_mines(self, x: int, y: int) -> int:
         assert not self._grid.get_cell_has_mine(x, y)
@@ -47,7 +53,15 @@ class GameEngine:
             return " "
 
     def get_grid_for_display(self) -> List[str]:
-        cells = []
+        return [self._cell_to_string(cell) for cell in self._grid]
+
+    def get_cell_has_mine(self, cell_x: int, cell_y: int) -> bool:
+        return self._grid.get_cell_has_mine(cell_x, cell_y)
+
+    def reveal_all(self) -> List[str]:
         for cell in self._grid:
-            cells.append(self._cell_to_string(cell))
-        return cells
+            cell.is_revealed = True
+        return self.get_grid_for_display()
+
+    def _set_cell_has_mine(self, x: int, y: int) -> None:
+        self._grid[x, y].has_mine = True
