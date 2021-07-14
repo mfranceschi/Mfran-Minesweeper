@@ -70,4 +70,4 @@ class MinesweeperGridWidget(tk.Frame):
                 b.configure(bg="blue", text=" ", state="normal")
             else:
                 # Revealed, has neighbours
-                b.configure(bg='purple', text=value, state="disabled")
+                b.configure(bg='white', text=value, state="disabled")
