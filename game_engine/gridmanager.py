@@ -13,9 +13,9 @@ class GridManager:
     def __init__(self, grid_x: int = 10, grid_y: int = 10):
         self._grid = Grid(grid_x, grid_y)
         self.nbr_mines = 0
-        self.game_is_running = False
 
     def fill_with_mines(self, nbr_mines: int = 3, procedure: Callable[[], None] = None):
+        self.nbr_mines = nbr_mines
         # TODO better abstraction system
         for i_cell in range(nbr_mines):
             self._grid._get_cell(0, i_cell).has_mine = True

@@ -1,14 +1,14 @@
 # ENTRY POINT
 
-from controller.controller import Controller
-from gui.mainwindow import MainWindow
+from controller.controller_impl import ControllerImpl
+from gui.gui_impl import GUIImpl
 
 
-controller = Controller()
-main_window = MainWindow(
+controller = ControllerImpl()
+gui = GUIImpl(
     grid_x=controller.difficulty.grid_x,
     grid_y=controller.difficulty.grid_y,
     controller=controller
 )
-controller.init_gui(main_window)
-main_window.root.mainloop()
+controller.init_gui(gui)
+gui.root.mainloop()

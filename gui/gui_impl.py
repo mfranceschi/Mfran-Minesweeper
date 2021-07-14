@@ -1,6 +1,6 @@
-from gui.controls import ControlsWidget
-from controller.abstract_controller import AbstractController
-from game_engine.gridmanager import GridManager
+from .gui import GUI
+from .controls import ControlsWidget
+from controller.controller import Controller
 from typing import Callable, List
 from .grid import MinesweeperGridWidget
 import tkinter as tk
@@ -9,11 +9,11 @@ import tkinter as tk
 WIN_WIDTH = 500
 
 
-class MainWindow():
+class GUIImpl(GUI):
     def __init__(
             self,
             grid_x: int, grid_y: int,
-            controller: AbstractController = None,) -> None:
+            controller: Controller = None,) -> None:
         self.grid_x = grid_x
         self.grid_y = grid_y
         self.controller = controller
