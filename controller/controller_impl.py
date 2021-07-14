@@ -1,3 +1,4 @@
+from game_engine.fill_grid import RandomGridFiller
 from gui.gui import GUI
 from controller.controller import Controller
 from enum import Enum
@@ -48,5 +49,6 @@ class ControllerImpl(Controller):
     def on_new_game(self) -> None:
         self.grid_manager = GridManager(
             self.difficulty.grid_x, self.difficulty.grid_y)
-        self.grid_manager.fill_with_mines(nbr_mines=self.difficulty.nbr_mines)
+        self.grid_manager.fill_with_mines(
+            nbr_mines=self.difficulty.nbr_mines, procedure=RandomGridFiller(self.difficulty.grid_x, self.difficulty.grid_y))
         self.main_window.set_grid(self.grid_manager.get_grid_for_display())

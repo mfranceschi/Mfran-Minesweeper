@@ -5,7 +5,8 @@ Created on Tue Jul  6 23:43:41 2021
 @author: Utilisateur
 """
 
-from typing import Iterable, List
+from collections.abc import Iterator
+from typing import List
 
 
 class Cell:
@@ -45,9 +46,6 @@ class Grid:
 
     def __getitem__(self, coord_xy):
         x, y = coord_xy
-        return self._get_cell(x, y)
-
-    def _get_cell(self, x: int, y: int) -> Cell:
         return self._get_cell_or_raise(x, y)
 
     def get_neighbours(self, x: int, y: int) -> List[int]:
@@ -90,13 +88,13 @@ class Grid:
         return neighbours
 
     def set_cell_flagged(self, cell_x: int, cell_y: int, flagged: bool) -> None:
-        self._get_cell(cell_x, cell_y).is_flagged = flagged
+        self._get_cell_or_raise(cell_x, cell_y).is_flagged = flagged
 
     def set_cell_revealed(self, cell_x: int, cell_y: int, revealed: bool) -> None:
-        self._get_cell(cell_x, cell_y).is_revealed = revealed
+        self._get_cell_or_raise(cell_x, cell_y).is_revealed = revealed
 
     def get_cell_has_mine(self, cell_x: int, cell_y: int) -> bool:
-        return self._get_cell(cell_x, cell_y).has_mine
+        return self._get_cell_or_raise(cell_x, cell_y).has_mine
 
-    def __iter__(self) -> Iterable[Cell]:
+    def __iter__(self) -> Iterator[Cell]:
         return (cell for line in self.grid for cell in line)
