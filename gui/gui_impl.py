@@ -57,4 +57,10 @@ class GUIImpl(GUI):
 
     @overrides
     def reset_grid_size(self, grid_x: int, grid_y: int) -> None:
+        old_grid = self.grid_frame
         self.grid_frame = self._make_grid_widget(grid_x, grid_y)
+        old_grid.grid_forget()
+
+    @overrides
+    def set_nbr_mines(self, nbr_mines: int) -> None:
+        self.bottom_frame.set_nbr_mines(nbr_mines)

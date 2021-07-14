@@ -61,5 +61,4 @@ class ControlsWidget(tk.Frame):
             master=self, on_new_difficulty=controller.on_new_game)
 
     def set_nbr_mines(self, nbr: int) -> None:
-        self.nbr_mines_label.configure(
-            text=self._make_string_for_nbr_mines(nbr))
+        self.nbr_mines_label.set_nbr_mines(nbr)
