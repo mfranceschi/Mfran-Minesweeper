@@ -22,18 +22,13 @@ class GUIImpl(GUI):
         self.root = tk.Tk()
         self.root.title("Mfranceschi Minesweeper!")
 
-        self.grid_frame = self._make_grid_widget(grid_x, grid_y)
-
-        self.elapsed_time_text = tk.StringVar(
-            master=self.root, value="")
+        self.elapsed_time_text = tk.StringVar(master=self.root, value="")
         self._update_elapsed_time_text()
-        self.bottom_frame = ControlsWidget(
-            master=self.root,
-            controller=self.controller,
-            elapsed_time_text=self.elapsed_time_text,
-            height=30,
-            bg="blue"
-        )
+
+        self.grid_frame = self.GridFrame(self)
+        self.grid_frame.grid(column=0, row=0)
+
+        self.bottom_frame = self.ControlsWidget(self)
         self.bottom_frame.grid(column=0, row=1)
 
     @overrides
@@ -46,20 +41,6 @@ class GUIImpl(GUI):
     def on_right_click_on_cell(self, x, y):
         self.controller.on_right_click(x, y)
 
-    def _make_grid_widget(self, grid_x: int, grid_y: int) -> MinesweeperGridWidget:
-        widget = MinesweeperGridWidget(
-            master=self.root,
-            height=WIN_WIDTH,
-            bg="red",
-
-            size_x=grid_x,
-            size_y=grid_y,
-            on_left_click=self.on_left_click_on_cell,
-            on_right_click=self.on_right_click_on_cell
-        )
-        widget.grid(column=0, row=0)
-        return widget
-
     def _update_elapsed_time_text(self):
         elapsed_seconds = time.time() - self.controller.get_game_starting_time()
         minutes, seconds = divmod(int(elapsed_seconds), 60)
@@ -70,7 +51,8 @@ class GUIImpl(GUI):
     @overrides
     def reset_grid_size(self, grid_x: int, grid_y: int) -> None:
         old_grid = self.grid_frame
-        self.grid_frame = self._make_grid_widget(grid_x, grid_y)
+        self.grid_frame = self.GridFrame(self)
+        self.grid_frame.grid(row=0, column=0)
         old_grid.grid_forget()
 
     @overrides
@@ -88,3 +70,30 @@ class GUIImpl(GUI):
     @overrides
     def game_starts(self) -> None:
         self.root.configure(bg="sky blue")
+
+    class GridFrame(MinesweeperGridWidget):
+        def __init__(self, gui_impl, *args, **kwargs) -> None:
+            super().__init__(
+                master=gui_impl.root,
+                height=WIN_WIDTH,
+                bg="red",
+
+                size_x=gui_impl.grid_x,
+                size_y=gui_impl.grid_y,
+                on_left_click=gui_impl.on_left_click_on_cell,
+                on_right_click=gui_impl.on_right_click_on_cell,
+                *args, **kwargs
+            )
+
+    class ControlsWidget(ControlsWidget):
+        def __init__(self, gui_impl, *args, **kwargs):
+            super().__init__(
+                master=gui_impl.root,
+                height=30,
+                bg="blue",
+
+                controller=gui_impl.controller,
+                elapsed_time_text=gui_impl.elapsed_time_text,
+
+                *args, **kwargs
+            )
