@@ -39,16 +39,16 @@ jobs:
         uses: alexanderdamiani/pytester-cov@v1.2.0
         with:
           # root directory to recursively search for .py files (default is .)
-          # pytest-root-dir:
+          pytest-root-dir: '.'
 
           # directory with pytest tests. if left empty will identify test(s) dir by default
-          pytest-tests-dir: tests
+          pytest-tests-dir: 'tests'
 
           # list of directories and/or files to ignore (default is )
-          # cov-omit-list:
+          cov-omit-list: 'tests/*'
 
           # requirements filepath for project (default is requirements.txt)
-          # requirements-file:
+          requirements-file: requirements.txt
 
           # fail if any single file coverage is less than threshold (default is 0)
           # cov-threshold-single:
