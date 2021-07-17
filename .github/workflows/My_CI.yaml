@@ -4,6 +4,8 @@ on: [ push, pull_request ]
 
 env:
   PYTHON_VERSION: '3.7'
+  COVERAGE_SINGLE: 60
+  COVERAGE_TOTAL: 60
 
 jobs:
   build_and_test:
@@ -17,6 +19,12 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{env.PYTHON_VERSION}}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Pytest and coverage
         uses: alexanderdamiani/pytester-cov@v1.2.0
