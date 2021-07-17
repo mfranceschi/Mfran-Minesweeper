@@ -1,4 +1,3 @@
-from game_engine.utils import Point2D
 import time
 import tkinter as tk
 from typing import List
@@ -6,8 +5,9 @@ from typing import List
 from overrides import overrides
 
 from controller.controller import Controller
+from game_engine.utils import Point2D
 from .controls import ControlsWidget
-from .grid import MinesweeperGridView
+from .grid import GridView
 from .gui import GUI
 
 
@@ -39,11 +39,11 @@ class GUIImpl(GUI):
     def set_grid(self, grid: List[str]) -> None:
         self.grid_frame.set_grid(grid)
 
-    def on_left_click_on_cell(self, x, y):
-        self.controller.on_left_click(Point2D(x, y))
+    def on_left_click_on_cell(self, cell_coord: Point2D):
+        self.controller.on_left_click(cell_coord)
 
-    def on_right_click_on_cell(self, x, y):
-        self.controller.on_right_click(Point2D(x, y))
+    def on_right_click_on_cell(self, cell_coord: Point2D):
+        self.controller.on_right_click(cell_coord)
 
     def _update_elapsed_time_text(self):
         elapsed_seconds = time.time() - self.controller.get_game_starting_time()
@@ -75,7 +75,11 @@ class GUIImpl(GUI):
     def game_starts(self) -> None:
         self.root.configure(bg="sky blue")
 
-    class GridFrame(MinesweeperGridView):
+    class GridFrame(GridView):
+        """
+        An easier-to-configure GridView.
+        """
+
         def __init__(self, gui_impl, *args, **kwargs) -> None:
             super().__init__(
                 master=gui_impl.root,
@@ -90,6 +94,10 @@ class GUIImpl(GUI):
             )
 
     class ControlsWidget(ControlsWidget):
+        """
+        An easier-to-configure ControlsWidget.
+        """
+
         def __init__(self, gui_impl, *args, **kwargs):
             super().__init__(
                 master=gui_impl.root,

@@ -1,14 +1,19 @@
 import tkinter as tk
-from functools import partial
 from typing import Callable, List
 
+from game_engine.utils import Point2D
 
-class MinesweeperGridView(tk.Frame):
+
+class GridView(tk.Frame):
+    """
+    Renders a grid and intercepts user clicks on cells.
+    """
+
     def __init__(
             self,
-            size_x=5, size_y=5,
-            on_left_click: Callable[[int, int], None] = None,
-            on_right_click: Callable[[int, int], None] = None,
+            size_x: int = 5, size_y: int = 5,
+            on_left_click: Callable[[Point2D], None] = None,
+            on_right_click: Callable[[Point2D], None] = None,
             **kwargs) -> None:
         super().__init__(**kwargs)
         self.size_x = size_x
@@ -22,56 +27,82 @@ class MinesweeperGridView(tk.Frame):
             self.columnconfigure(column_index, minsize=25, weight=1)
 
         self.grid_to_display: List[str] = ["0"] * (size_x * size_y)
-        self.buttons: List[tk.Button] = [None] * len(self.grid_to_display)
+        self.buttons: List[self.Cell] = [None] * len(self.grid_to_display)
 
         for row_index in range(self.size_y):
             for column_index in range(self.size_x):
-                button = tk.Button(
+                coord = Point2D(x=column_index, y=row_index)
+                cell_value = self.grid_to_display[self._index_of_point(coord)]
+
+                button = self.Cell(
+                    cell_coord=coord,
+                    cell_value=cell_value,
                     master=self,
-                    text=self._get_at_index(
-                        column_index, row_index, self.grid_to_display),
-                    bg="purple",
-                    # command=partial(self.on_left_click, x, y)
-                )
-                button.bind("<ButtonRelease>", partial(
-                    self.handle_button_event, column_index, row_index))
+                    on_left_click=self.on_left_click,
+                    on_right_click=self.on_right_click)
                 button.grid(row=row_index, column=column_index, sticky="nsew")
-                self._set_at_index(column_index, row_index,
-                                   self.buttons, button)
+                self.buttons[self._index_of_point(coord)] = button
 
-    def _get_at_index(self, x: int, y: int, array: list):
-        return array[y * self.size_x + x]
-
-    def _set_at_index(self, x: int, y: int, array: list, value):
-        array[y * self.size_x + x] = value
-
-    def handle_button_event(self, x: int, y: int, event: tk.Event):
-        if event.num == 1:
-            # Left click
-            self.on_left_click(x, y)
-        elif event.num == 2 or event.num == 3:
-            # Middle or right click
-            self.on_right_click(x, y)
-        print(f"CLICK {event=} {x=} {y=}")
+    def _index_of_point(self, point: Point2D) -> int:
+        return point.y * self.size_x + point.x
 
     def set_grid(self, grid: List[str]) -> None:
         for i, value in enumerate(grid):
-            self._render_button(self.buttons[i], value)
+            self.buttons[i].set_cell_value(value)
 
-    @staticmethod
-    def _render_button(button: tk.Button, value: str):
-        if value == "0":
-            # Revealed, no neighbour
-            button.configure(bg="grey", text=" ", state="disabled")
-        elif value == "F":
-            # Not revealed, flag
-            button.configure(bg="yellow", text=" ", state="normal")
-        elif value == "M":
-            # Revealed, mine
-            button.configure(bg="red", text=" ", state="disabled")
-        elif value == " ":
-            # Not revealed, no flag
-            button.configure(bg="blue", text=" ", state="normal")
-        else:
-            # Revealed, has neighbours
-            button.configure(bg='white', text=value, state="disabled")
+    class Cell(tk.Button):
+        """
+        Wrapper class: configures a cell button.
+        When the cell updates please set the "cell_value" string.
+        """
+
+        def __init__(
+                self,
+                cell_coord: Point2D,
+                cell_value: str,
+                master: tk.Widget,
+                on_left_click: Callable[[Point2D], None],
+                on_right_click: Callable[[Point2D], None]
+        ):
+            super().__init__(master=master)
+            self.cell_coord = cell_coord
+            self.on_left_click = on_left_click
+            self.on_right_click = on_right_click
+            self.cell_value: str = " "
+            self.set_cell_value(cell_value)
+
+            self.bind("<ButtonRelease>", self.handle_button_event)
+
+        def handle_button_event(self, event: tk.Event):
+            if event.num == 1:
+                # Left click
+                self.on_left_click(self.cell_coord)
+            elif event.num == 2 or event.num == 3:
+                # Middle or right click
+                self.on_right_click(self.cell_coord)
+
+        def set_cell_value(self, cell_value: str) -> None:
+            self.cell_value = cell_value
+            self._render_for_cell_value()
+
+        def _render_for_cell_value(self) -> None:
+            if self.cell_value == "0":
+                # Revealed, no neighbour
+                self.configure(bg="grey", text=" ", state="disabled")
+
+            elif self.cell_value == "F":
+                # Not revealed, flag
+                self.configure(bg="yellow", text=" ", state="normal")
+
+            elif self.cell_value == "M":
+                # Revealed, mine
+                self.configure(bg="red", text=" ", state="disabled")
+
+            elif self.cell_value == " ":
+                # Not revealed, no flag
+                self.configure(bg="blue", text=" ", state="normal")
+
+            else:
+                # Revealed, has neighbours
+                self.configure(
+                    bg='white', text=self.cell_value, state="disabled")

@@ -58,7 +58,7 @@ class Grid:
         max_x = self.dim.x - 1
         max_y = self.dim.y - 1
 
-        x, y = cell.x, cell.y
+        x, y = cell.x, cell.y  # pylint: disable=invalid-name
 
         if x != 0:
             # Top left
