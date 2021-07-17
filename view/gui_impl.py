@@ -1,4 +1,3 @@
-import time
 import tkinter as tk
 from typing import List
 
@@ -50,7 +49,7 @@ class GUIImpl(GUI):
         self.controller.on_right_click(cell_coord)
 
     def _update_elapsed_time_text(self):
-        elapsed_seconds = time.time() - self.controller.get_game_starting_time()
+        elapsed_seconds = self.controller.get_current_game_time()
         minutes, seconds = divmod(int(elapsed_seconds), 60)
         self.elapsed_time_text.set(
             f"Elapsed time: {f'{minutes}min ' if minutes else ''}{seconds}s")

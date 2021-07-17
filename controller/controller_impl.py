@@ -23,9 +23,11 @@ class ControllerImpl(Controller):
         self.gui: GUI = None
         self.grid_manager: GridManager = None
         self.difficulty: DifficultyLevel
-        self.game_over: bool = False
+        self.game_is_running: bool
         self.set_difficulty(self.INITIAL_DIFFICULTY.value)
         self.game_starting_time: float = time()
+        self.game_ending_time: float = time()
+        self._start_game()
 
     def set_difficulty(self, level: DifficultyLevel):
         self.difficulty = level
@@ -39,12 +41,13 @@ class ControllerImpl(Controller):
     def on_left_click(self, cell_coord: Point2D) -> None:
         self.grid_manager.reveal_cell(cell_coord)
         if self.grid_manager.get_cell_has_mine(cell_coord):
-            self.game_over = True
+            self._stop_game()
             self.gui.set_grid(self.grid_manager.reveal_all())
             self.gui.game_over()
         else:
             self.gui.set_grid(self.grid_manager.get_grid_for_display())
             if self.has_won():
+                self._stop_game()
                 self.gui.set_grid(self.grid_manager.reveal_all())
                 self.gui.victory()
 
@@ -70,8 +73,8 @@ class ControllerImpl(Controller):
         self.gui.reset_grid_size(grid_x, grid_y)
         self.gui.set_nbr_mines(nbr_mines)
         self.gui.set_grid(self.grid_manager.get_grid_for_display())
+        self._start_game()
         self.gui.game_starts()
-        self.game_starting_time = time()
 
     def has_won(self) -> bool:
         has_won = self.difficulty.nbr_mines == self.grid_manager.get_count_of_not_revealed_cells()
@@ -82,5 +85,16 @@ class ControllerImpl(Controller):
         return self.difficulty.nbr_mines
 
     @overrides
-    def get_game_starting_time(self) -> float:
-        return self.game_starting_time
+    def get_current_game_time(self) -> float:
+        if self.game_is_running:
+            return time() - self.game_starting_time
+        else:
+            return self.game_ending_time-self.game_starting_time
+
+    def _start_game(self) -> None:
+        self.game_is_running = True
+        self.game_starting_time = time()
+
+    def _stop_game(self) -> None:
+        self.game_is_running = False
+        self.game_ending_time = time()

@@ -46,5 +46,5 @@ class Controller:
     def get_nbr_mines(self) -> int:
         raise NotImplementedError()
 
-    def get_game_starting_time(self) -> float:
+    def get_current_game_time(self) -> float:
         raise NotImplementedError()
