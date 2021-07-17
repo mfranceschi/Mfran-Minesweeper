@@ -2,6 +2,9 @@ name: My_CI
 
 on: [ push, pull_request ]
 
+env:
+  PYTHON_VERSION: '3.7'
+
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
@@ -10,10 +13,11 @@ jobs:
       - name: Checkout Git repo
         uses: actions/checkout@v2
 
-      - name: Set up Python 3.7
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.7
+          python-version: ${{env.PYTHON_VERSION}}
+        run: 'python -m pip install --upgrade pip'
 
       - name: Pytest and coverage
         uses: alexanderdamiani/pytester-cov@v1.2.0
@@ -45,9 +49,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up Python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: ${{env.PYTHON_VERSION}}
 
       - name: Prepare pylint
         uses: cclauss/GitHub-Action-for-pylint@0.7.0
