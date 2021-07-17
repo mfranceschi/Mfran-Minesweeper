@@ -6,8 +6,9 @@ from overrides import overrides
 
 from controller.controller import Controller
 from .controls import ControlsWidget
-from .grid import MinesweeperGridWidget
+from .grid import MinesweeperGridView
 from .gui import GUI
+
 
 WIN_WIDTH = 500
 
@@ -73,7 +74,7 @@ class GUIImpl(GUI):
     def game_starts(self) -> None:
         self.root.configure(bg="sky blue")
 
-    class GridFrame(MinesweeperGridWidget):
+    class GridFrame(MinesweeperGridView):
         def __init__(self, gui_impl, *args, **kwargs) -> None:
             super().__init__(
                 master=gui_impl.root,

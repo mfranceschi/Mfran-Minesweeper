@@ -4,16 +4,6 @@ import random
 from overrides.overrides import overrides
 
 
-class AbstractFillGrid:
-    """
-    You can inherit from this class and use @overrides to ensure types are correct.
-    It is for convenience, it's not a requirement!
-    """
-
-    def __call__(self, place_mine: Callable[[int, int], None], nbr_mines: int) -> None:
-        raise NotImplementedError()
-
-
 def fill_grid_dummy(function: Callable[[int, int], None], nbr_mines: int) -> None:
     """
     Fills the first line with mines. Fails if it results in too many mines!
@@ -31,7 +21,7 @@ def fill_grid_dummy(function: Callable[[int, int], None], nbr_mines: int) -> Non
             x_cell += 1
 
 
-class RandomGridFiller(AbstractFillGrid):
+class RandomGridFiller:
     """
     Call my constructor with the grid size.
     My call method randomly fills the grid with no duplicates.

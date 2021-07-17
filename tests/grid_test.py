@@ -5,7 +5,7 @@ import pytest
 from game_engine.grid import Cell, Grid
 
 
-def test_dimensions(grid_5_7: Grid):
+def test_it_has_correct_dimensions(grid_5_7: Grid):
     assert grid_5_7.dim.x == 5
     assert grid_5_7.dim.y == 7
 
@@ -122,7 +122,7 @@ class TestGetNeighbours:
                 )
 
 
-def test_subscript(grid_5_7):
+def test_it_can_use_subscript_operator(grid_5_7: Grid):
     my_cell = grid_5_7[1, 2]
     assert my_cell.x == 1
     assert my_cell.y == 2

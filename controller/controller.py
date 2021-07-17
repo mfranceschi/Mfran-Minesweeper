@@ -31,7 +31,7 @@ class Controller:
     def on_new_game(self, difficulty_level: Optional[DifficultyLevel] = None) -> None:
         raise NotImplementedError()
 
-    def on_left_click(self, x: int, y: int) -> None:
+    def on_left_click(self, cell_x: int, cell_y: int) -> None:
         raise NotImplementedError()
 
     def on_right_click(self, x: int, y: int) -> None:
