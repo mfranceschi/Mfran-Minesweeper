@@ -23,7 +23,7 @@ jobs:
 
       - name: Pytest and coverage
         id: pytest
-        uses: alexanderdamiani/My_CI@v1.2.0
+        uses: alexanderdamiani/pytester-cov@v1.2.0
         with:
           pytest-root-dir: '.'
           pytest-tests-dir: './tests'
