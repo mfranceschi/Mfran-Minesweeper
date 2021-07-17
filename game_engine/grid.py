@@ -41,7 +41,6 @@ class Grid:
 
         self.dim = grid_dim
 
-        # TODO using a list might not be ideal for perfs. To be profiled?
         self.grid = [[Cell(Point2D(x, y)) for x in range(grid_dim.x)]
                      for y in range(grid_dim.y)]
 
