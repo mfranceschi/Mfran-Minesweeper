@@ -3,14 +3,11 @@ name: My_CI
 on: [ push, pull_request ]
 
 env:
-  PYTHON_VERSION: 3.8
+  PYTHON_VERSION: 3.9
 
 jobs:
   main-job:
     runs-on: ubuntu-latest
-    env:
-      COVERAGE_SINGLE: 60
-      COVERAGE_TOTAL: 60
 
     steps:
       - name: Checkout Git repo
@@ -24,8 +21,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pylint
           pip install -r requirements.txt
+          pip install pylint
 
       - name: Run pylint
         run: pylint **/*.py
