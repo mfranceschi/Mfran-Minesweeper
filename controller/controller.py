@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
+from game_engine.utils import Point2D
 from view.gui import GUI
 
 
@@ -25,16 +26,21 @@ class DifficultyLevels(Enum):
 
 
 class Controller:
+    """
+    Abstract controller class.
+    Provides infos about current game and processes user inputs.
+    """
+
     def init_gui(self, gui: GUI) -> None:
         raise NotImplementedError()
 
     def on_new_game(self, difficulty_level: Optional[DifficultyLevel] = None) -> None:
         raise NotImplementedError()
 
-    def on_left_click(self, cell_x: int, cell_y: int) -> None:
+    def on_left_click(self, cell_coord: Point2D) -> None:
         raise NotImplementedError()
 
-    def on_right_click(self, x: int, y: int) -> None:
+    def on_right_click(self, cell_coord: Point2D) -> None:
         raise NotImplementedError()
 
     def get_nbr_mines(self) -> int:

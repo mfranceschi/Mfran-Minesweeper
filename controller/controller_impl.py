@@ -5,6 +5,7 @@ from overrides import overrides
 
 from game_engine.fill_grid import RandomGridFiller
 from game_engine.gridmanager import GridManager
+from game_engine.utils import Point2D
 from view.gui import GUI
 
 from .controller import Controller, DifficultyLevel, DifficultyLevels
@@ -15,6 +16,7 @@ class ControllerImpl(Controller):
 
     def __init__(self) -> None:
         self.gui: GUI = None
+        self.grid_manager: GridManager = None
         self.difficulty: DifficultyLevel
         self.game_over: bool = False
         self.set_difficulty(self.INITIAL_DIFFICULTY.value)
@@ -29,9 +31,9 @@ class ControllerImpl(Controller):
         self.on_new_game()
 
     @overrides
-    def on_left_click(self, x: int, y: int) -> None:
-        self.grid_manager.reveal_cell(x, y)
-        if self.grid_manager.get_cell_has_mine(x, y):
+    def on_left_click(self, cell_coord: Point2D) -> None:
+        self.grid_manager.reveal_cell(cell_coord)
+        if self.grid_manager.get_cell_has_mine(cell_coord):
             self.game_over = True
             self.gui.set_grid(self.grid_manager.reveal_all())
             self.gui.game_over()
@@ -42,8 +44,8 @@ class ControllerImpl(Controller):
                 self.gui.victory()
 
     @overrides
-    def on_right_click(self, x: int, y: int) -> None:
-        self.grid_manager.toggle_flag_cell(x, y)
+    def on_right_click(self, cell_coord: Point2D) -> None:
+        self.grid_manager.toggle_flag_cell(cell_coord)
         self.gui.set_grid(self.grid_manager.get_grid_for_display())
 
     @overrides

@@ -1,3 +1,4 @@
+from game_engine.utils import Point2D
 import time
 import tkinter as tk
 from typing import List
@@ -39,10 +40,10 @@ class GUIImpl(GUI):
         self.grid_frame.set_grid(grid)
 
     def on_left_click_on_cell(self, x, y):
-        self.controller.on_left_click(x, y)
+        self.controller.on_left_click(Point2D(x, y))
 
     def on_right_click_on_cell(self, x, y):
-        self.controller.on_right_click(x, y)
+        self.controller.on_right_click(Point2D(x, y))
 
     def _update_elapsed_time_text(self):
         elapsed_seconds = time.time() - self.controller.get_game_starting_time()
