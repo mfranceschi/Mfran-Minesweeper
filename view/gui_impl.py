@@ -7,7 +7,7 @@ from overrides import overrides
 from controller.controller import Controller
 from game_engine.utils import Point2D
 from .controls import ControlsWidget
-from .grid import GridView
+from .grid_view import GridView
 from .gui import GUI
 
 
@@ -15,6 +15,10 @@ WIN_WIDTH = 500
 
 
 class GUIImpl(GUI):
+    """
+    Actual implementation of the GUI.
+    """
+
     def __init__(
             self,
             grid_x: int, grid_y: int,

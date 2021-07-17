@@ -1,8 +1,9 @@
-from game_engine.utils import Point2D
-from typing import Callable, Set, Tuple
 import random
+from typing import Callable, Set, Tuple
 
 from overrides.overrides import overrides
+
+from game_engine.utils import Point2D
 
 
 def fill_grid_dummy(function: Callable[[Point2D], None], nbr_mines: int) -> None:

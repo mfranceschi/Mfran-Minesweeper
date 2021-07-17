@@ -15,6 +15,7 @@ class TestGetNeighbours:
     """
     Groups tests for Grid.get_neighbours(x, y)
     """
+
     @classmethod
     def check_list_of_cells(
             cls,
@@ -27,15 +28,17 @@ class TestGetNeighbours:
                 "Invalid amount of neighbours"
 
         for cell in cells_to_look_for:
-            x, y = cell[0], cell[1]
+            cell_pos = Point2D(x=cell[0], y=cell[1])
             assert \
                 any(
                     cell_from_list for cell_from_list in list_to_review
-                    if cell_from_list.x == x and cell_from_list.y == y
+                    if cell_from_list.x == cell_pos.x and cell_from_list.y == cell_pos.y
                 ), \
-                f"Unable to find cell of coordinates (x={x}, y={y}) within the list of neighbours"
+                f"Unable to find cell of coordinates (x={cell_pos.x}, y={cell_pos.y}) " + \
+                "within the list of neighbours"
 
-    def test_raises_error_if_out_of_range(self, grid_5_7: Grid):
+    @staticmethod
+    def test_raises_error_if_out_of_range(grid_5_7: Grid):
         # Negative values
         with pytest.raises(AssertionError):
             grid_5_7.get_neighbours(Point2D(-1, 0))

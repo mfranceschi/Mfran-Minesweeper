@@ -33,7 +33,17 @@ class NbrMinesLabel(tk.Label):
 
 
 class DifficultyChoice(tk.Frame):
-    def __init__(self, master, on_new_difficulty: Callable[[DifficultyLevel], None], *args, **kwargs):
+    """
+    Wraps a frame that allows the user to select a difficulty
+    and start a new game with it.
+    """
+
+    def __init__(
+        self,
+        master,
+        on_new_difficulty: Callable[[DifficultyLevel], None],
+        *args, **kwargs
+    ):
         super().__init__(master=master, *args, **kwargs)
         self.on_new_difficulty = on_new_difficulty
         self.grid(row=0, column=3, padx=20)
@@ -66,6 +76,10 @@ class ElapsedTimeLabel(tk.Label):
 
 
 class ControlsWidget(tk.Frame):
+    """
+    Wraps some cool widgets that display stuff or provide the user with input items.
+    """
+
     def __init__(self, controller: Controller, elapsed_time_text: tk.StringVar, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.configure(padx=15, pady=15, background="white")

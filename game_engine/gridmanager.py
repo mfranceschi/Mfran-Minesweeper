@@ -1,17 +1,15 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jul  6 23:43:41 2021
+from typing import Callable, List, Set
 
-@author: Utilisateur
-"""
-
-from game_engine.utils import Point2D
 from game_engine.fill_grid import fill_grid_dummy
+from game_engine.utils import Point2D
 from .grid import Cell, Grid
-from typing import Callable, List, Set, Tuple
 
 
 class GridManager:
+    """
+    Manages a grid and provides convenience access methods.
+    """
+
     def __init__(self, grid_x: int = 10, grid_y: int = 10):
         self._grid = Grid(Point2D(grid_x, grid_y))
         self.nbr_mines = 0
@@ -75,19 +73,21 @@ class GridManager:
         if not cell.has_mine and self.get_nb_of_close_mines(cell_coord) == 0:
             self._reveal_for_no_neighbour(cell_coord)
 
-    def _reveal_for_no_neighbour(self, cell_coord: Point2D, explored_no_neighbours: Set[Tuple[int, int]] = None) -> None:
+    def _reveal_for_no_neighbour(
+            self,
+            cell_coord: Point2D,
+            explored_no_neighbours: Set[Point2D] = None
+    ) -> None:
         if not explored_no_neighbours:
             explored_no_neighbours = set()
-        explored_no_neighbours.add((cell_coord.x, cell_coord.y))
+        explored_no_neighbours.add(cell_coord)
         self._grid.set_cell_revealed(cell_coord, True)
 
         local_neighbours = self._grid.get_neighbours(cell_coord)
         for neighbour_cell in local_neighbours:
             neighbour_cell_pos = neighbour_cell.pos
-            neighbour_x = neighbour_cell.x
-            neighbour_y = neighbour_cell.y
 
-            if (neighbour_x, neighbour_y) in explored_no_neighbours:
+            if neighbour_cell_pos in explored_no_neighbours:
                 continue
 
             if self.get_nb_of_close_mines(neighbour_cell_pos) == 0:

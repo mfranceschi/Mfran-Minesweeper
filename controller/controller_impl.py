@@ -12,6 +12,11 @@ from .controller import Controller, DifficultyLevel, DifficultyLevels
 
 
 class ControllerImpl(Controller):
+    """
+    Actual implementation of a controller.
+    Initial difficulty is easy.
+    """
+
     INITIAL_DIFFICULTY = DifficultyLevels.EASY
 
     def __init__(self) -> None:
