@@ -64,4 +64,7 @@ jobs:
         uses: cclauss/GitHub-Action-for-pylint@0.7.0
 
       - name: Run pylint
-        run: pip install -r requirements.txt ; pylint **/*.py
+        run: |
+          pip install -r requirements.txt
+          pip install pylint
+          python -m pylint **/*.py
