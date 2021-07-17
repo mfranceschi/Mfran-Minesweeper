@@ -5,6 +5,10 @@ from controller.controller import Controller, DifficultyLevel, DifficultyLevels
 
 
 class NewGameButton(tk.Button):
+    """
+    Wraps a button. On click, calls the given command to start a new game.
+    """
+
     def __init__(self, master, command, *args, **kwargs):
         super().__init__(master=master, command=command,
                          background="yellow", *args, **kwargs)
@@ -12,6 +16,10 @@ class NewGameButton(tk.Button):
 
 
 class NbrMinesLabel(tk.Label):
+    """
+    Wraps a label with the number of mines.
+    """
+
     def __init__(self, master, *args, **kwargs):
         super().__init__(master=master, *args, **kwargs)
         self.grid(row=0, column=2, padx=20)
@@ -48,6 +56,10 @@ class DifficultyChoice(tk.Frame):
 
 
 class ElapsedTimeLabel(tk.Label):
+    """
+    Wraps a label with the elapsed time, straight from the text variable.
+    """
+
     def __init__(self, master, text_variable: tk.StringVar, *args, **kwargs):
         super().__init__(master=master, textvariable=text_variable, *args, **kwargs)
         self.grid(row=0, column=4)
