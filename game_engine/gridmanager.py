@@ -28,7 +28,7 @@ class GridManager:
     def get_count_of_not_revealed_cells(self) -> int:
         return len([cell for cell in self._grid if not cell.is_revealed])
 
-    def _cell_to_string(self, cell: Cell):
+    def _cell_to_string(self, cell: Cell) -> str:
         if cell.is_revealed:
             if cell.has_mine:
                 return "M"
@@ -51,9 +51,11 @@ class GridManager:
 
     # GLOBAL MODIFIERS
     def fill_with_mines(
-            self,
-            nbr_mines: int = 3,
-            procedure: Callable[[Callable[[Point2D], None], int], None] = fill_grid_dummy):
+        self,
+        nbr_mines: int = 3,
+        procedure: Callable[[Callable[[Point2D], None],
+                             int], None] = fill_grid_dummy
+    ) -> None:
         self.nbr_mines = nbr_mines
 
         procedure(self._set_cell_has_mine, nbr_mines)
@@ -66,7 +68,7 @@ class GridManager:
             cell.is_revealed = True
         return self.get_grid_for_display()
 
-    def reveal_cell(self, cell_coord: Point2D):
+    def reveal_cell(self, cell_coord: Point2D) -> None:
         cell = self._grid[cell_coord.x, cell_coord.y]
         if not cell.is_revealed and not cell.is_flagged:
             self._grid.set_cell_revealed(cell_coord, True)

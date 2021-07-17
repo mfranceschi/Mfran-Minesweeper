@@ -32,15 +32,15 @@ class GUIImpl(GUI):
         self.elapsed_time_text = tk.StringVar(master=self.root, value="")
         self._update_elapsed_time_text()
 
-        self.grid_frame = self.GridFrame(self)
-        self.grid_frame.grid(column=0, row=0)
+        self.grid_view = self.make_grid_view()
+        self.grid_view.grid(column=0, row=0)
 
-        self.bottom_frame = self.ControlsWidget(self)
+        self.bottom_frame = self.make_controls_widget()
         self.bottom_frame.grid(column=0, row=1)
 
     @overrides
     def set_grid(self, grid: List[str]) -> None:
-        self.grid_frame.set_grid(grid)
+        self.grid_view.set_grid(grid)
 
     def on_left_click_on_cell(self, cell_coord: Point2D):
         self.controller.on_left_click(cell_coord)
@@ -57,11 +57,11 @@ class GUIImpl(GUI):
 
     @overrides
     def reset_grid_size(self, grid_x: int, grid_y: int) -> None:
-        self.grid_frame.destroy()
+        self.grid_view.destroy()
         self.grid_x = grid_x
         self.grid_y = grid_y
-        self.grid_frame = self.GridFrame(self)
-        self.grid_frame.grid(row=0, column=0)
+        self.grid_view = self.make_grid_view()
+        self.grid_view.grid(row=0, column=0)
 
     @overrides
     def set_nbr_mines(self, nbr_mines: int) -> None:
@@ -79,37 +79,24 @@ class GUIImpl(GUI):
     def game_starts(self) -> None:
         self.root.configure(bg="sky blue")
 
-    class GridFrame(GridView):
-        """
-        An easier-to-configure GridView.
-        """
+    def make_grid_view(self) -> GridView:
+        return GridView(
+            master=self.root,
+            height=WIN_WIDTH,
+            bg="red",
 
-        def __init__(self, gui_impl, *args, **kwargs) -> None:
-            super().__init__(
-                master=gui_impl.root,
-                height=WIN_WIDTH,
-                bg="red",
+            size_x=self.grid_x,
+            size_y=self.grid_y,
+            on_left_click=self.on_left_click_on_cell,
+            on_right_click=self.on_right_click_on_cell,
+        )
 
-                size_x=gui_impl.grid_x,
-                size_y=gui_impl.grid_y,
-                on_left_click=gui_impl.on_left_click_on_cell,
-                on_right_click=gui_impl.on_right_click_on_cell,
-                *args, **kwargs
-            )
+    def make_controls_widget(self) -> ControlsWidget:
+        return ControlsWidget(
+            master=self.root,
+            height=30,
+            bg="blue",
 
-    class ControlsWidget(ControlsWidget):
-        """
-        An easier-to-configure ControlsWidget.
-        """
-
-        def __init__(self, gui_impl, *args, **kwargs):
-            super().__init__(
-                master=gui_impl.root,
-                height=30,
-                bg="blue",
-
-                controller=gui_impl.controller,
-                elapsed_time_text=gui_impl.elapsed_time_text,
-
-                *args, **kwargs
-            )
+            controller=self.controller,
+            elapsed_time_text=self.elapsed_time_text,
+        )

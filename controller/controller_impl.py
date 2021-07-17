@@ -89,7 +89,7 @@ class ControllerImpl(Controller):
         if self.game_is_running:
             return time() - self.game_starting_time
         else:
-            return self.game_ending_time-self.game_starting_time
+            return self.game_ending_time - self.game_starting_time
 
     def _start_game(self) -> None:
         self.game_is_running = True

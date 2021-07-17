@@ -32,11 +32,9 @@ class GridView(tk.Frame):
         for row_index in range(self.size_y):
             for column_index in range(self.size_x):
                 coord = Point2D(x=column_index, y=row_index)
-                cell_value = self.grid_to_display[self._index_of_point(coord)]
 
                 button = self.Cell(
                     cell_coord=coord,
-                    cell_value=cell_value,
                     master=self,
                     on_left_click=self.on_left_click,
                     on_right_click=self.on_right_click)
@@ -59,7 +57,6 @@ class GridView(tk.Frame):
         def __init__(
                 self,
                 cell_coord: Point2D,
-                cell_value: str,
                 master: tk.Widget,
                 on_left_click: Callable[[Point2D], None],
                 on_right_click: Callable[[Point2D], None]
@@ -68,8 +65,7 @@ class GridView(tk.Frame):
             self.cell_coord = cell_coord
             self.on_left_click = on_left_click
             self.on_right_click = on_right_click
-            self.cell_value: str = " "
-            self.set_cell_value(cell_value)
+            self.set_cell_value(" ")
 
             self.bind("<ButtonRelease>", self.handle_button_event)
 
@@ -82,27 +78,23 @@ class GridView(tk.Frame):
                 self.on_right_click(self.cell_coord)
 
         def set_cell_value(self, cell_value: str) -> None:
-            self.cell_value = cell_value
-            self._render_for_cell_value()
-
-        def _render_for_cell_value(self) -> None:
-            if self.cell_value == "0":
+            if cell_value == "0":
                 # Revealed, no neighbour
                 self.configure(bg="grey", text=" ", state="disabled")
 
-            elif self.cell_value == "F":
+            elif cell_value == "F":
                 # Not revealed, flag
                 self.configure(bg="yellow", text=" ", state="normal")
 
-            elif self.cell_value == "M":
+            elif cell_value == "M":
                 # Revealed, mine
                 self.configure(bg="red", text=" ", state="disabled")
 
-            elif self.cell_value == " ":
+            elif cell_value == " ":
                 # Not revealed, no flag
                 self.configure(bg="blue", text=" ", state="normal")
 
             else:
                 # Revealed, has neighbours
                 self.configure(
-                    bg='white', text=self.cell_value, state="disabled")
+                    bg='white', text=cell_value, state="disabled")
