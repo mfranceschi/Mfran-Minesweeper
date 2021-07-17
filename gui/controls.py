@@ -41,7 +41,7 @@ class DifficultyChoice(tk.Frame):
 
     def _handle_ok(self):
         choice: str = str(self.listbox.get(tk.ANCHOR)).upper()
-        assert choice in DifficultyLevels.__dict__.keys()
+        assert choice in DifficultyLevels.__members__.keys()
         self.on_new_difficulty(getattr(DifficultyLevels, choice).value)
 
 
