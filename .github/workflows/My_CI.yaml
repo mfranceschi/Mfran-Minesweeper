@@ -31,6 +31,7 @@ jobs:
         run: pylint **/*.py
 
       - name: Pytest and coverage
+        if: always()
         id: pytest
         uses: alexanderdamiani/pytester-cov@v1.2.0
         with:
