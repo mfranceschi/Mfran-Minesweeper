@@ -4,12 +4,14 @@ on: [ push, pull_request ]
 
 env:
   PYTHON_VERSION: '3.7'
-  COVERAGE_SINGLE: 60
-  COVERAGE_TOTAL: 60
+  WORKFLOW_NAME: My_CI
 
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
+    env:
+      COVERAGE_SINGLE: 60
+      COVERAGE_TOTAL: 60
 
     steps:
       - name: Checkout Git repo
@@ -18,34 +20,55 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{env.PYTHON_VERSION}}
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install flake8 pytest
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Pytest and coverage
-        uses: alexanderdamiani/pytester-cov@v1.2.0
+        id: pytest
+        uses: alexanderdamiani/${{env.WORKFLOW_NAME}}@v1.2.0
         with:
-          # root directory to recursively search for .py files (default is .)
           pytest-root-dir: '.'
-
-          # directory with pytest tests. if left empty will identify test(s) dir by default
-          pytest-tests-dir: 'tests'
-
-          # list of directories and/or files to ignore (default is )
+          pytest-tests-dir: './tests'
           cov-omit-list: 'tests/*'
-
-          # requirements filepath for project (default is requirements.txt)
           requirements-file: requirements.txt
+          cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
+          cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
 
-          # fail if any single file coverage is less than threshold (default is 0)
-          # cov-threshold-single:
+      - name: Coverage single fail - new issue
+        if: ${{ steps.${{env.WORKFLOW_NAME}}.outputs.cov-threshold-single-fail == 'true' }}
+        uses: nashmaniac/create-issue-action@v1.1
+        with:
+          title: Pytest coverage single falls below minimum ${{ env.COVERAGE_SINGLE }}
+          token: ${{secrets.GITHUB_TOKEN}}
+          assignees: ${{github.actor}}
+          labels: worflow-failed
+          body: ${{ steps.${{env.WORKFLOW_NAME}}.outputs.output-table }}
 
-          # fail if the total coverage is less than threshold (default is 0)
-          cov-threshold-total: 50
+      - name: Coverage single fail - exit
+        if: ${{ steps.${{env.WORKFLOW_NAME}}.outputs.cov-threshold-single-fail == 'true' }}
+        run: |
+          echo "cov single fail ${{ steps.${{env.WORKFLOW_NAME}}.outputs.cov-threshold-single-fail }}"
+          exit 1
+
+      - name: Coverage total fail - new issue
+        if: ${{ steps.${{env.WORKFLOW_NAME}}.outputs.cov-threshold-total-fail == 'true' }}
+        uses: nashmaniac/create-issue-action@v1.1
+        with:
+          title: Pytest coverage total falls below minimum ${{ env.COVERAGE_TOTAL }}
+          token: ${{secrets.GITHUB_TOKEN}}
+          assignees: ${{github.actor}}
+          labels: worflow-failed
+          body: ${{ steps.${{env.WORKFLOW_NAME}}.outputs.output-table }}
+
+      - name: Coverage total fail - exit
+        if: ${{ steps.${{env.WORKFLOW_NAME}}.outputs.cov-threshold-total-fail == 'true' }}
+        run: |
+          echo "cov single fail ${{ steps.${{env.WORKFLOW_NAME}}.outputs.cov-threshold-total-fail }}"
+          exit 1
+
+      - name: Commit pytest coverage table
+        uses: peter-evans/commit-comment@v1
+        with:
+          body: ${{ steps.${{env.WORKFLOW_NAME}}.outputs.output-table }}
 
   run-linters:
     name: Run linters
