@@ -1,11 +1,13 @@
 from time import time
-from game_engine.fill_grid import RandomGridFiller
-from gui.gui import GUI
-from controller.controller import Controller, DifficultyLevel, DifficultyLevels
-from enum import Enum
-from typing import Optional, Union
-from game_engine.gridmanager import GridManager
+from typing import Optional
+
 from overrides import overrides
+
+from game_engine.fill_grid import RandomGridFiller
+from game_engine.gridmanager import GridManager
+from gui.gui import GUI
+
+from controller.controller import Controller, DifficultyLevel, DifficultyLevels
 
 
 class ControllerImpl(Controller):

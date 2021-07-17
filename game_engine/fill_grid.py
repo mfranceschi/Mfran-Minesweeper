@@ -8,11 +8,11 @@ def fill_grid_dummy(function: Callable[[int, int], None], nbr_mines: int) -> Non
     """
     x_cell = 0
     y_cell = 0
-    for i_cell in range(nbr_mines):
+    for __ in range(nbr_mines):
         try:
             function(x_cell, y_cell)
             x_cell += 1
-        except:
+        except AssertionError:
             x_cell = 0
             y_cell += 1
             function(x_cell, y_cell)
@@ -43,5 +43,5 @@ class RandomGridFiller:
     def __call__(self, place_mine: Callable[[int, int], None], nbr_mines: int) -> None:
         placed_mines: Set[Tuple[int, int]] = set()
 
-        for i_mine in range(nbr_mines):
+        for __ in range(nbr_mines):
             place_mine(*self.make_position(placed_mines))
