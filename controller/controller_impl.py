@@ -5,9 +5,9 @@ from overrides import overrides
 
 from game_engine.fill_grid import RandomGridFiller
 from game_engine.gridmanager import GridManager
-from gui.gui import GUI
+from view.gui import GUI
 
-from controller.controller import Controller, DifficultyLevel, DifficultyLevels
+from .controller import Controller, DifficultyLevel, DifficultyLevels
 
 
 class ControllerImpl(Controller):

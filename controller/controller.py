@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
-from gui.gui import GUI
+from view.gui import GUI
 
 
 @dataclass(frozen=True)

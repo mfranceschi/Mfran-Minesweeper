@@ -1,6 +1,5 @@
 import tkinter as tk
 from functools import partial
-from tkinter.constants import E
 from typing import Callable, List
 
 
@@ -57,20 +56,20 @@ class MinesweeperGridWidget(tk.Frame):
         for i, value in enumerate(grid):
             self._render_button(self.buttons[i], value)
 
-    def _render_button(self, button: tk.Button, value: str):
-        b = button
+    @staticmethod
+    def _render_button(button: tk.Button, value: str):
         if value == "0":
             # Revealed, no neighbour
-            b.configure(bg="grey", text=" ", state="disabled")
+            button.configure(bg="grey", text=" ", state="disabled")
         elif value == "F":
             # Not revealed, flag
-            b.configure(bg="yellow", text=" ", state="normal")
+            button.configure(bg="yellow", text=" ", state="normal")
         elif value == "M":
             # Revealed, mine
-            b.configure(bg="red", text=" ", state="disabled")
+            button.configure(bg="red", text=" ", state="disabled")
         elif value == " ":
             # Not revealed, no flag
-            b.configure(bg="blue", text=" ", state="normal")
+            button.configure(bg="blue", text=" ", state="normal")
         else:
             # Revealed, has neighbours
-            b.configure(bg='white', text=value, state="disabled")
+            button.configure(bg='white', text=value, state="disabled")

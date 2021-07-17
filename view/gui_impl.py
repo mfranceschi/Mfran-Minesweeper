@@ -1,11 +1,13 @@
-from .gui import GUI
-from .controls import ControlsWidget
-from controller.controller import Controller
-from typing import Callable, List
-from .grid import MinesweeperGridWidget
-import tkinter as tk
-from overrides import overrides
 import time
+import tkinter as tk
+from typing import List
+
+from overrides import overrides
+
+from controller.controller import Controller
+from .controls import ControlsWidget
+from .grid import MinesweeperGridWidget
+from .gui import GUI
 
 WIN_WIDTH = 500
 

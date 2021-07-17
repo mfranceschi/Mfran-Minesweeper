@@ -1,6 +1,7 @@
-from controller.controller import Controller, DifficultyLevel, DifficultyLevels
 import tkinter as tk
 from typing import Callable
+
+from controller.controller import Controller, DifficultyLevel, DifficultyLevels
 
 
 class NewGameButton(tk.Button):
@@ -15,7 +16,8 @@ class NbrMinesLabel(tk.Label):
         super().__init__(master=master, *args, **kwargs)
         self.grid(row=0, column=2, padx=20)
 
-    def _make_string_for_nbr_mines(self, nbr: int) -> str:
+    @staticmethod
+    def _make_string_for_nbr_mines(nbr: int) -> str:
         return f"There are {nbr} mines!"
 
     def set_nbr_mines(self, nbr: int) -> None:
