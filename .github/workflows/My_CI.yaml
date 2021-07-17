@@ -6,7 +6,7 @@ env:
   PYTHON_VERSION: '3.7'
 
 jobs:
-  build_and_test:
+  main-job:
     runs-on: ubuntu-latest
     env:
       COVERAGE_SINGLE: 60
@@ -21,6 +21,15 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pylint
+          pip install -r requirements.txt
+
+      - name: Run pylint
+        run: pylint **/*.py
+
       - name: Pytest and coverage
         id: pytest
         uses: alexanderdamiani/pytester-cov@v1.2.0
@@ -28,7 +37,6 @@ jobs:
           pytest-root-dir: '.'
           pytest-tests-dir: './tests'
           cov-omit-list: 'tests/*'
-          requirements-file: requirements.txt
           cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
           cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
 
@@ -68,25 +76,3 @@ jobs:
         uses: peter-evans/commit-comment@v1
         with:
           body: ${{ steps.My_CI.outputs.output-table }}
-
-  run-linters:
-    name: Run linters
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{env.PYTHON_VERSION}}
-
-      - name: Prepare pylint
-        uses: cclauss/GitHub-Action-for-pylint@0.7.0
-
-      - name: Run pylint
-        run: |
-          pip install -r requirements.txt
-          pip install pylint
-          python -m pylint **/*.py
