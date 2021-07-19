@@ -1,9 +1,14 @@
-from controller.controller import Controller, DifficultyLevel, DifficultyLevels
 import tkinter as tk
 from typing import Callable
 
+from controller.controller import Controller, DifficultyLevel, DifficultyLevels
+
 
 class NewGameButton(tk.Button):
+    """
+    Wraps a button. On click, calls the given command to start a new game.
+    """
+
     def __init__(self, master, command, *args, **kwargs):
         super().__init__(master=master, command=command,
                          background="yellow", *args, **kwargs)
@@ -11,11 +16,16 @@ class NewGameButton(tk.Button):
 
 
 class NbrMinesLabel(tk.Label):
+    """
+    Wraps a label with the number of mines.
+    """
+
     def __init__(self, master, *args, **kwargs):
         super().__init__(master=master, *args, **kwargs)
         self.grid(row=0, column=2, padx=20)
 
-    def _make_string_for_nbr_mines(self, nbr: int) -> str:
+    @staticmethod
+    def _make_string_for_nbr_mines(nbr: int) -> str:
         return f"There are {nbr} mines!"
 
     def set_nbr_mines(self, nbr: int) -> None:
@@ -23,7 +33,17 @@ class NbrMinesLabel(tk.Label):
 
 
 class DifficultyChoice(tk.Frame):
-    def __init__(self, master, on_new_difficulty: Callable[[DifficultyLevel], None], *args, **kwargs):
+    """
+    Wraps a frame that allows the user to select a difficulty
+    and start a new game with it.
+    """
+
+    def __init__(
+        self,
+        master,
+        on_new_difficulty: Callable[[DifficultyLevel], None],
+        *args, **kwargs
+    ):
         super().__init__(master=master, *args, **kwargs)
         self.on_new_difficulty = on_new_difficulty
         self.grid(row=0, column=3, padx=20)
@@ -41,17 +61,25 @@ class DifficultyChoice(tk.Frame):
 
     def _handle_ok(self):
         choice: str = str(self.listbox.get(tk.ANCHOR)).upper()
-        assert choice in DifficultyLevels.__dict__.keys()
+        assert choice in DifficultyLevels.__members__.keys()
         self.on_new_difficulty(getattr(DifficultyLevels, choice).value)
 
 
 class ElapsedTimeLabel(tk.Label):
+    """
+    Wraps a label with the elapsed time, straight from the text variable.
+    """
+
     def __init__(self, master, text_variable: tk.StringVar, *args, **kwargs):
         super().__init__(master=master, textvariable=text_variable, *args, **kwargs)
         self.grid(row=0, column=4)
 
 
 class ControlsWidget(tk.Frame):
+    """
+    Wraps some cool widgets that display stuff or provide the user with input items.
+    """
+
     def __init__(self, controller: Controller, elapsed_time_text: tk.StringVar, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.configure(padx=15, pady=15, background="white")

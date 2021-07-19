@@ -1,7 +1,7 @@
 # ENTRY POINT
 
 from controller.controller_impl import ControllerImpl
-from gui.gui_impl import GUIImpl
+from view.gui_impl import GUIImpl
 
 
 controller = ControllerImpl()

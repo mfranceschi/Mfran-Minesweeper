@@ -1,7 +1,11 @@
-from typing import Any, Callable, List
+from typing import List
 
 
 class GUI:
+    """
+    Interface for some controller to send and display information and data.
+    """
+
     def reset_grid_size(self, grid_x: int, grid_y: int) -> None:
         raise NotImplementedError()
 

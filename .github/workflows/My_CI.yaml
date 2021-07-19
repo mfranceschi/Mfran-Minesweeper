@@ -1,63 +1,32 @@
 name: My_CI
 
-# Trigger on push on any branch
-# Trigger on PR on master
-# Can be manually ran
-on:
-  push:
-  pull_request:
-    branches: [ master ]
-  workflow_dispatch:
+on: [ push, pull_request ]
+
+env:
+  PYTHON_VERSION: 3.9
 
 jobs:
-  build_and_test:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-
-      # What about some 'hello, world' before all?
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # UNIT TESTS + CODE COVERAGE
-      - name: pytester-covXYZ
-        # You may pin to the exact commit or the version.
-        uses: alexanderdamiani/pytester-cov@v1.2.0
-        with:
-          # root directory to recursively search for .py files (default is .)
-          # pytest-root-dir:
-
-          # directory with pytest tests. if left empty will identify test(s) dir by default
-          pytest-tests-dir: tests
-
-          # list of directories and/or files to ignore (default is )
-          # cov-omit-list:
-
-          # requirements filepath for project (default is requirements.txt)
-          # requirements-file:
-
-          # fail if any single file coverage is less than threshold (default is 0)
-          # cov-threshold-single:
-
-          # fail if the total coverage is less than threshold (default is 0)
-          cov-threshold-total: 50
-
-  run-linters:
-    name: Run linters
+  main-job:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out Git repository
+      - name: Checkout Git repo
         uses: actions/checkout@v2
 
       - name: Set up Python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: GitHub Action for pylint
-        uses: cclauss/GitHub-Action-for-pylint@0.7.0
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pylint
+
+      - name: Run pylint
+        run: pylint **/*.py
+
+      - name: Run tests
+        if: always()
+        run: pytest .

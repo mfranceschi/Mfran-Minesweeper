@@ -1,57 +1,63 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jul  6 23:43:41 2021
-
-@author: Utilisateur
-"""
-
 from collections.abc import Iterator
-from typing import List
+from dataclasses import dataclass
+from typing import List, Tuple
+
+from game_engine.utils import Point2D
 
 
+@dataclass(frozen=False)
 class Cell:
-    def __init__(self, x: int, y: int):
-        self.x = x
-        self.y = y
-        self.has_mine = False
-        self.is_flagged = False
-        self.is_revealed = False
+    """
+    Position and attributes of a cell in a grid.
+    """
+
+    pos: Point2D
+    has_mine: bool = False
+    is_flagged: bool = False
+    is_revealed: bool = False
 
     def __repr__(self) -> str:
-        return f"Cell[x={self.x},y={self.y}," + \
+        return f"Cell[x={self.pos.x},y={self.pos.y}," + \
             f"has_mine={self.has_mine},is_flagged={self.is_flagged}"
 
+    @property
+    def x(self) -> int:  # pylint: disable=invalid-name
+        return self.pos.x
 
-class Dimension2D:
-    def __init__(self, x: int, y: int) -> None:
-        self.x = x
-        self.y = y
+    @property
+    def y(self) -> int:  # pylint: disable=invalid-name
+        return self.pos.y
 
 
 class Grid:
-    def __init__(self, grid_x: int = 10, grid_y: int = 10):
-        assert grid_x >= 2
-        assert grid_y >= 2
+    """
+    Container for a 2D grid of cells.
+    Use __getitem__(x, y) to get a specific cell.
+    """
 
-        self.dim = Dimension2D(grid_x, grid_y)
+    def __init__(self, grid_dim: Point2D = Point2D(x=10, y=10)):
+        assert grid_dim.x >= 2
+        assert grid_dim.y >= 2
 
-        # TODO using a list might not be ideal for perfs. To be profiled?
-        self.grid = [[Cell(x, y) for x in range(grid_x)]
-                     for y in range(grid_y)]
+        self.dim = grid_dim
 
-    def _get_cell_or_raise(self, x: int, y: int) -> Cell:
-        assert 0 <= x < self.dim.x
-        assert 0 <= y < self.dim.y
-        return self.grid[y][x]
+        self.grid = [[Cell(Point2D(x, y)) for x in range(grid_dim.x)]
+                     for y in range(grid_dim.y)]
 
-    def __getitem__(self, coord_xy):
-        x, y = coord_xy
-        return self._get_cell_or_raise(x, y)
+    def _get_cell_or_raise(self, coord: Point2D) -> Cell:
+        assert 0 <= coord.x < self.dim.x
+        assert 0 <= coord.y < self.dim.y
+        return self.grid[coord.y][coord.x]
 
-    def get_neighbours(self, x: int, y: int) -> List[Cell]:
+    def __getitem__(self, coord_xy: Tuple[int, int]) -> Cell:
+        return self._get_cell_or_raise(Point2D(*coord_xy))
+
+    def get_neighbours(self, cell: Point2D) -> List[Cell]:
         neighbours = []
         max_x = self.dim.x - 1
         max_y = self.dim.y - 1
+
+        x, y = cell.x, cell.y  # pylint: disable=invalid-name
 
         if x != 0:
             # Top left
@@ -87,14 +93,14 @@ class Grid:
 
         return neighbours
 
-    def set_cell_flagged(self, cell_x: int, cell_y: int, flagged: bool) -> None:
-        self._get_cell_or_raise(cell_x, cell_y).is_flagged = flagged
+    def set_cell_flagged(self, cell_coord: Point2D, flagged: bool) -> None:
+        self._get_cell_or_raise(cell_coord).is_flagged = flagged
 
-    def set_cell_revealed(self, cell_x: int, cell_y: int, revealed: bool) -> None:
-        self._get_cell_or_raise(cell_x, cell_y).is_revealed = revealed
+    def set_cell_revealed(self, cell_coord: Point2D, revealed: bool) -> None:
+        self._get_cell_or_raise(cell_coord).is_revealed = revealed
 
-    def get_cell_has_mine(self, cell_x: int, cell_y: int) -> bool:
-        return self._get_cell_or_raise(cell_x, cell_y).has_mine
+    def get_cell_has_mine(self, cell_coord: Point2D) -> bool:
+        return self._get_cell_or_raise(cell_coord).has_mine
 
     def __iter__(self) -> Iterator[Cell]:
         return (cell for line in self.grid for cell in line)

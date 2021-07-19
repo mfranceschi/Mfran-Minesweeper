@@ -1,21 +1,26 @@
-from typing import Callable, Set, Tuple
 import random
+from typing import Callable, Set, Tuple
+
+from overrides.overrides import overrides
+
+from game_engine.utils import Point2D
 
 
-def fill_grid_dummy(function: Callable[[int, int], None], nbr_mines: int) -> None:
+def fill_grid_dummy(function: Callable[[Point2D], None], nbr_mines: int) -> None:
     """
     Fills the first line with mines. Fails if it results in too many mines!
     """
     x_cell = 0
     y_cell = 0
-    for i_cell in range(nbr_mines):
+
+    for __ in range(nbr_mines):
         try:
-            function(x_cell, y_cell)
+            function(Point2D(x_cell, y_cell))
             x_cell += 1
-        except:
+        except AssertionError:
             x_cell = 0
             y_cell += 1
-            function(x_cell, y_cell)
+            function(Point2D(x_cell, y_cell))
             x_cell += 1
 
 
@@ -40,8 +45,9 @@ class RandomGridFiller:
         known_positions.add(position)
         return position
 
-    def __call__(self, place_mine: Callable[[int, int], None], nbr_mines: int) -> None:
+    @overrides
+    def __call__(self, place_mine: Callable[[Point2D], None], nbr_mines: int) -> None:
         placed_mines: Set[Tuple[int, int]] = set()
 
-        for i_mine in range(nbr_mines):
-            place_mine(*self.make_position(placed_mines))
+        for __ in range(nbr_mines):
+            place_mine(Point2D(*self.make_position(placed_mines)))
