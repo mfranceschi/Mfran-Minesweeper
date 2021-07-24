@@ -1,4 +1,4 @@
-from typing import Callable, List, Set
+from typing import Callable, List
 
 from .fill_grid import fill_grid_dummy
 from .grid import Cell, Grid

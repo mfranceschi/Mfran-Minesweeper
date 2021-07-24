@@ -30,3 +30,7 @@ jobs:
       - name: Run tests
         if: always()
         run: pytest .
+
+      - name: Ensure no print
+        if: always()
+        run: "! grep -Rl 'print(' --include=*.py"

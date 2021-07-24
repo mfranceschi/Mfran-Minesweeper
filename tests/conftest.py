@@ -1,7 +1,7 @@
 import pytest
 
-from game_engine.grid import Grid
-from game_engine.utils import Point2D
+from model.grid import Grid
+from model.utils import Point2D
 
 
 @pytest.fixture
