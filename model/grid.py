@@ -93,6 +93,10 @@ class Grid:
 
         return neighbours
 
+    def get_nb_of_close_mines(self, cell_coord: Point2D) -> int:
+        assert not self.get_cell_has_mine(cell_coord)
+        return sum((cell.has_mine for cell in self.get_neighbours(cell_coord)))
+
     def set_cell_flagged(self, cell_coord: Point2D, flagged: bool) -> None:
         self._get_cell_or_raise(cell_coord).is_flagged = flagged
 
