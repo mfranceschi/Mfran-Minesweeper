@@ -9,7 +9,6 @@ from .controls import ControlsWidget
 from .grid_view import GridView
 from .gui import GUI
 
-
 WIN_WIDTH = 500
 
 
