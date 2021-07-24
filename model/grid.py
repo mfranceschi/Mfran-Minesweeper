@@ -1,6 +1,10 @@
+from abc import ABC, abstractmethod
 from collections.abc import Iterator
 from dataclasses import dataclass
-from typing import List, Tuple
+from typing import Iterable, List, Tuple
+from overrides.enforce import EnforceOverrides
+
+from overrides.overrides import overrides
 
 from .utils import Point2D
 
@@ -29,30 +33,67 @@ class Cell:
         return self.pos.y
 
 
-class Grid:
+class Grid(ABC, EnforceOverrides):
     """
     Container for a 2D grid of cells.
     Use __getitem__(x, y) to get a specific cell.
     """
 
-    def __init__(self, grid_dim: Point2D = Point2D(x=10, y=10)):
-        assert grid_dim.x >= 2
-        assert grid_dim.y >= 2
+    def __init__(self, dim: Point2D):
+        assert dim.x >= 2
+        assert dim.y >= 2
+        self.dim = dim
 
-        self.dim = grid_dim
+    @abstractmethod
+    def _get_cell_or_raise(self, coord: Point2D) -> Cell:
+        raise NotImplementedError()
 
-        self.grid = [[Cell(Point2D(x, y)) for x in range(grid_dim.x)]
-                     for y in range(grid_dim.y)]
+    def __getitem__(self, coord_xy: Tuple[int, int]) -> Cell:
+        return self._get_cell_or_raise(Point2D(*coord_xy))
 
+    @abstractmethod
+    def get_neighbours(self, cell: Point2D) -> Iterable[Cell]:
+        raise NotImplementedError()
+
+    def get_nb_of_close_mines(self, cell_coord: Point2D) -> int:
+        assert not self.get_cell_has_mine(cell_coord)
+        return sum((cell.has_mine for cell in self.get_neighbours(cell_coord)))
+
+    def set_cell_flagged(self, cell_coord: Point2D, flagged: bool) -> None:
+        self._get_cell_or_raise(cell_coord).is_flagged = flagged
+
+    def set_cell_revealed(self, cell_coord: Point2D, revealed: bool) -> None:
+        self._get_cell_or_raise(cell_coord).is_revealed = revealed
+
+    def get_cell_has_mine(self, cell_coord: Point2D) -> bool:
+        return self._get_cell_or_raise(cell_coord).has_mine
+
+    @abstractmethod
+    def __iter__(self) -> Iterator[Cell]:
+        raise NotImplementedError()
+
+
+class GridImplWithPythonList(Grid):
+    """
+    Implementation of the Grid with a Python list.
+    """
+
+    def __init__(self, dim: Point2D):
+        super().__init__(dim)
+
+        self.grid: List[List[Cell]] = [
+            [Cell(Point2D(x, y)) for x in range(dim.x)]
+            for y in range(dim.y)
+        ]
+
+    @overrides
     def _get_cell_or_raise(self, coord: Point2D) -> Cell:
         assert 0 <= coord.x < self.dim.x
         assert 0 <= coord.y < self.dim.y
         return self.grid[coord.y][coord.x]
 
-    def __getitem__(self, coord_xy: Tuple[int, int]) -> Cell:
-        return self._get_cell_or_raise(Point2D(*coord_xy))
-
-    def get_neighbours(self, cell: Point2D) -> List[Cell]:
+    @overrides
+    def get_neighbours(self, cell: Point2D) -> Iterable[Cell]:
         neighbours = []
         max_x = self.dim.x - 1
         max_y = self.dim.y - 1
@@ -93,18 +134,6 @@ class Grid:
 
         return neighbours
 
-    def get_nb_of_close_mines(self, cell_coord: Point2D) -> int:
-        assert not self.get_cell_has_mine(cell_coord)
-        return sum((cell.has_mine for cell in self.get_neighbours(cell_coord)))
-
-    def set_cell_flagged(self, cell_coord: Point2D, flagged: bool) -> None:
-        self._get_cell_or_raise(cell_coord).is_flagged = flagged
-
-    def set_cell_revealed(self, cell_coord: Point2D, revealed: bool) -> None:
-        self._get_cell_or_raise(cell_coord).is_revealed = revealed
-
-    def get_cell_has_mine(self, cell_coord: Point2D) -> bool:
-        return self._get_cell_or_raise(cell_coord).has_mine
-
+    @overrides
     def __iter__(self) -> Iterator[Cell]:
         return (cell for line in self.grid for cell in line)

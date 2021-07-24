@@ -1,7 +1,7 @@
 from typing import Callable, List
 
 from .fill_grid import fill_grid_dummy
-from .grid import Cell, Grid
+from .grid import Cell, Grid, GridImplWithPythonList
 from .utils import Point2D
 
 
@@ -11,7 +11,7 @@ class GridManager:
     """
 
     def __init__(self, grid_x: int = 10, grid_y: int = 10):
-        self._grid = Grid(Point2D(grid_x, grid_y))
+        self._grid: Grid = GridImplWithPythonList(Point2D(grid_x, grid_y))
         self.nbr_mines = 0
 
     # GETTERS
