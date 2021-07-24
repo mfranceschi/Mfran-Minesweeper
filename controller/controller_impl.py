@@ -3,9 +3,9 @@ from typing import Optional
 
 from overrides import overrides
 
-from game_engine.fill_grid import RandomGridFiller
-from game_engine.gridmanager import GridManager
-from game_engine.utils import Point2D
+from model.fill_grid import RandomGridFiller
+from model.gridmanager import GridManager
+from model.utils import Point2D
 from view.gui import GUI
 
 from .controller import Controller, DifficultyLevel, DifficultyLevels

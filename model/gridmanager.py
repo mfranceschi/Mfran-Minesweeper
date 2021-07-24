@@ -1,8 +1,8 @@
 from typing import Callable, List, Set
 
-from game_engine.fill_grid import fill_grid_dummy
-from game_engine.utils import Point2D
+from .fill_grid import fill_grid_dummy
 from .grid import Cell, Grid
+from .utils import Point2D
 
 
 class GridManager:

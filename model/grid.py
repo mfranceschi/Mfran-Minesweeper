@@ -2,7 +2,7 @@ from collections.abc import Iterator
 from dataclasses import dataclass
 from typing import List, Tuple
 
-from game_engine.utils import Point2D
+from .utils import Point2D
 
 
 @dataclass(frozen=False)

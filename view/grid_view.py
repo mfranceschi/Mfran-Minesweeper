@@ -1,7 +1,7 @@
 import tkinter as tk
 from typing import Callable, List
 
-from game_engine.utils import Point2D
+from model.utils import Point2D
 
 
 class GridView(tk.Frame):
