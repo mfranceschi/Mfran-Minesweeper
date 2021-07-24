@@ -64,7 +64,12 @@ class GridManager:
             cell.is_revealed = True
         return self.get_grid_for_display()
 
-    class CellRevealer:
+    class CellRevealer:  # pylint: disable=too-few-public-methods
+        """
+        This class wraps the cell revealing logic if it has to be done recursively.
+        Invoke the run() method on click on some cell with no neighbour.
+        """
+
         def __init__(self, grid: Grid) -> None:
             self.grid = grid
             self.explored_no_neighbours = set()
