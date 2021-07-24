@@ -4,11 +4,10 @@ from typing import List
 from overrides import overrides
 
 from controller.controller import Controller
-from game_engine.utils import Point2D
+from model.utils import Point2D
 from .controls import ControlsWidget
 from .grid_view import GridView
 from .gui import GUI
-
 
 WIN_WIDTH = 500
 

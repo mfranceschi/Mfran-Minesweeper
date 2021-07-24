@@ -2,8 +2,8 @@ from typing import List, Tuple
 
 import pytest
 
-from game_engine.grid import Cell, Grid
-from game_engine.utils import Point2D
+from model.grid import Cell, Grid
+from model.utils import Point2D
 
 
 def test_it_has_correct_dimensions(grid_5_7: Grid):

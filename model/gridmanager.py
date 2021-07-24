@@ -1,8 +1,9 @@
-from typing import Callable, List, Set
+from typing import Callable, List
 
-from game_engine.fill_grid import fill_grid_dummy
-from game_engine.utils import Point2D
+from .fill_grid import fill_grid_dummy
 from .grid import Cell, Grid
+from .grid_impl_with_python_list import GridImplWithPythonList
+from .utils import Point2D
 
 
 class GridManager:
@@ -11,14 +12,10 @@ class GridManager:
     """
 
     def __init__(self, grid_x: int = 10, grid_y: int = 10):
-        self._grid = Grid(Point2D(grid_x, grid_y))
+        self._grid: Grid = GridImplWithPythonList(Point2D(grid_x, grid_y))
         self.nbr_mines = 0
 
     # GETTERS
-    def get_nb_of_close_mines(self, cell_coord: Point2D) -> int:
-        assert not self._grid.get_cell_has_mine(cell_coord)
-        return sum((cell.has_mine for cell in self._grid.get_neighbours(cell_coord)))
-
     def get_grid_for_display(self) -> List[str]:
         return [self._cell_to_string(cell) for cell in self._grid]
 
@@ -33,7 +30,7 @@ class GridManager:
             if cell.has_mine:
                 return "M"
             else:
-                neighbours = self.get_nb_of_close_mines(cell.pos)
+                neighbours = self._grid.get_nb_of_close_mines(cell.pos)
                 return str(neighbours)
         elif cell.is_flagged:
             return "F"
@@ -68,32 +65,36 @@ class GridManager:
             cell.is_revealed = True
         return self.get_grid_for_display()
 
+    class CellRevealer:  # pylint: disable=too-few-public-methods
+        """
+        This class wraps the cell revealing logic if it has to be done recursively.
+        Invoke the run() method on click on some cell with no neighbour.
+        """
+
+        def __init__(self, grid: Grid) -> None:
+            self.grid = grid
+            self.explored_no_neighbours = set()
+
+        def run(self, cell_coord: Point2D) -> None:
+            self.explored_no_neighbours.add(cell_coord)
+            self.grid.set_cell_revealed(cell_coord, True)
+
+            local_neighbours = self.grid.get_neighbours(cell_coord)
+            for neighbour_cell in local_neighbours:
+                neighbour_cell_pos = neighbour_cell.pos
+
+                if neighbour_cell_pos in self.explored_no_neighbours:
+                    continue
+
+                if self.grid.get_nb_of_close_mines(neighbour_cell_pos) == 0:
+                    self.run(
+                        cell_coord=neighbour_cell_pos)
+                else:
+                    self.grid.set_cell_revealed(neighbour_cell_pos, True)
+
     def reveal_cell(self, cell_coord: Point2D) -> None:
         cell = self._grid[cell_coord.x, cell_coord.y]
         if not cell.is_revealed and not cell.is_flagged:
             self._grid.set_cell_revealed(cell_coord, True)
-        if not cell.has_mine and self.get_nb_of_close_mines(cell_coord) == 0:
-            self._reveal_for_no_neighbour(cell_coord)
-
-    def _reveal_for_no_neighbour(
-            self,
-            cell_coord: Point2D,
-            explored_no_neighbours: Set[Point2D] = None
-    ) -> None:
-        if not explored_no_neighbours:
-            explored_no_neighbours = set()
-        explored_no_neighbours.add(cell_coord)
-        self._grid.set_cell_revealed(cell_coord, True)
-
-        local_neighbours = self._grid.get_neighbours(cell_coord)
-        for neighbour_cell in local_neighbours:
-            neighbour_cell_pos = neighbour_cell.pos
-
-            if neighbour_cell_pos in explored_no_neighbours:
-                continue
-
-            if self.get_nb_of_close_mines(neighbour_cell_pos) == 0:
-                self._reveal_for_no_neighbour(
-                    neighbour_cell_pos, explored_no_neighbours)
-            else:
-                self._grid.set_cell_revealed(neighbour_cell_pos, True)
+        if not cell.has_mine and self._grid.get_nb_of_close_mines(cell_coord) == 0:
+            self.CellRevealer(grid=self._grid).run(cell_coord=cell_coord)

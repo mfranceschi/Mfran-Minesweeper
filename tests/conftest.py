@@ -1,9 +1,10 @@
 import pytest
 
-from game_engine.grid import Grid
-from game_engine.utils import Point2D
+from model.grid import Grid
+from model.grid_impl_with_python_list import GridImplWithPythonList
+from model.utils import Point2D
 
 
 @pytest.fixture
-def grid_5_7():
-    return Grid(Point2D(5, 7))
+def grid_5_7() -> Grid:
+    return GridImplWithPythonList(Point2D(5, 7))

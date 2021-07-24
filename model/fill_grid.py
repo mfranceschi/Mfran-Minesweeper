@@ -3,7 +3,7 @@ from typing import Callable, Set, Tuple
 
 from overrides.overrides import overrides
 
-from game_engine.utils import Point2D
+from .utils import Point2D
 
 
 def fill_grid_dummy(function: Callable[[Point2D], None], nbr_mines: int) -> None:
@@ -33,21 +33,22 @@ class RandomGridFiller:
     def __init__(self, grid_x: int, grid_y: int) -> None:
         self.grid_x = grid_x
         self.grid_y = grid_y
+        self.placed_mines: Set[Tuple[int, int]] = set()
 
     def make_new_random_position(self) -> Tuple[int, int]:
         return (random.randint(0, self.grid_x - 1),
                 random.randint(0, self.grid_y - 1))
 
-    def make_position(self, known_positions: Set[Tuple[int, int]]) -> Tuple[int, int]:
+    def make_position(self) -> Tuple[int, int]:
         position = self.make_new_random_position()
-        while position in known_positions:
+        while position in self.placed_mines:
             position = self.make_new_random_position()
-        known_positions.add(position)
+        self.placed_mines.add(position)
         return position
 
     @overrides
     def __call__(self, place_mine: Callable[[Point2D], None], nbr_mines: int) -> None:
-        placed_mines: Set[Tuple[int, int]] = set()
+        self.placed_mines = set()
 
         for __ in range(nbr_mines):
-            place_mine(Point2D(*self.make_position(placed_mines)))
+            place_mine(Point2D(*self.make_position()))
