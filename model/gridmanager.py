@@ -1,7 +1,8 @@
 from typing import Callable, List
 
 from .fill_grid import fill_grid_dummy
-from .grid import Cell, Grid, GridImplWithPythonList
+from .grid import Cell, Grid
+from .grid_impl_with_python_list import GridImplWithPythonList
 from .utils import Point2D
 
 
