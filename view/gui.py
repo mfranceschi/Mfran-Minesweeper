@@ -8,6 +8,7 @@ from model.utils import Point2D
 
 
 class CellValueAsString(Enum):
+    """Simple enum with the possible string values of a CellValue."""
     REVEALED_ZERO_NEIGHBOUR = "0"
     FLAGGED = "F"
     MINE = "M"
