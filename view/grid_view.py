@@ -1,5 +1,6 @@
 import tkinter as tk
 from typing import Callable, List
+from view.gui import CellValue, CellValueAsString
 
 from model.utils import Point2D
 
@@ -45,7 +46,7 @@ class GridView(tk.Frame):
     def _index_of_point(self, point: Point2D) -> int:
         return point.y * self.size_x + point.x
 
-    def set_grid(self, grid: List[str]) -> None:
+    def set_grid(self, grid: List[CellValue]) -> None:
         for i, value in enumerate(grid):
             self.buttons[i].set_cell_value(value)
 
@@ -67,7 +68,7 @@ class CellView:
         self.cell_coord = cell_coord
         self.on_left_click = on_left_click
         self.on_right_click = on_right_click
-        self.set_cell_value(" ")
+        self.set_cell_value(CellValueAsString.NOT_REVEALED)
 
         self.widget.bind("<ButtonRelease>", self.handle_button_event)
 
@@ -79,7 +80,18 @@ class CellView:
             # Middle or right click
             self.on_right_click(self.cell_coord)
 
-    def set_cell_value(self, cell_value: str) -> None:
+    def set_cell_value(self, cell_value: CellValue) -> None:
+        state = "disabled" if cell_value == CellValueAsString.FLAGGED.value or CellValueAsString.NOT_REVEALED.value else "normal"
+        text = " " if isinstance(cell_value, str) else str(cell_value)
+        colour = {
+            CellValueAsString.FLAGGED.value: "yellow",
+            CellValueAsString.MINE.value: "red",
+            CellValueAsString.REVEALED_ZERO_NEIGHBOUR.value: "grey",
+            CellValueAsString.NOT_REVEALED.value: "blue",
+        }.get(cell_value, "white")
+
+        self.widget.configure(bg=colour, state=state, text=text)
+
         if cell_value == "0":
             # Revealed, no neighbour
             self.widget.configure(bg="grey", text=" ", state="disabled")

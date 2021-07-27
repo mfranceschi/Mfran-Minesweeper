@@ -1,9 +1,20 @@
 from abc import ABC, abstractmethod
-from typing import List
+from enum import Enum
+from typing import List, Union
 
 from overrides import EnforceOverrides
 
 from model.utils import Point2D
+
+
+class CellValueAsString(Enum):
+    REVEALED_ZERO_NEIGHBOUR = "0"
+    FLAGGED = "F"
+    MINE = "M"
+    NOT_REVEALED = " "
+
+
+CellValue = Union[int, CellValueAsString]
 
 
 class GUI(ABC, EnforceOverrides):
@@ -20,7 +31,7 @@ class GUI(ABC, EnforceOverrides):
         raise NotImplementedError()
 
     @abstractmethod
-    def set_grid(self, grid: List[str]) -> None:
+    def set_grid(self, grid: List[CellValue]) -> None:
         raise NotImplementedError()
 
     @abstractmethod

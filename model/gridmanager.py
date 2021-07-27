@@ -1,4 +1,5 @@
 from typing import Callable, List
+from view.gui import CellValue, CellValueAsString
 
 from .cell import Cell
 from .fill_grid import fill_grid_dummy
@@ -17,7 +18,7 @@ class GridManager:
         self.nbr_mines = 0
 
     # GETTERS
-    def get_grid_for_display(self) -> List[str]:
+    def get_grid_for_display(self) -> List[CellValue]:
         return [self._cell_to_string(cell) for cell in self._grid]
 
     def get_cell_has_mine(self, cell_coord: Point2D) -> bool:
@@ -26,17 +27,17 @@ class GridManager:
     def get_count_of_not_revealed_cells(self) -> int:
         return len([cell for cell in self._grid if not cell.is_revealed])
 
-    def _cell_to_string(self, cell: Cell) -> str:
+    def _cell_to_string(self, cell: Cell) -> CellValue:
         if cell.is_revealed:
             if cell.has_mine:
-                return "M"
+                return CellValueAsString.MINE.value
             else:
-                neighbours = self._grid.get_nb_of_close_mines(cell.pos)
-                return str(neighbours)
+                close_mines = self._grid.get_nb_of_close_mines(cell.pos)
+                return close_mines if close_mines else "0"
         elif cell.is_flagged:
-            return "F"
+            return CellValueAsString.FLAGGED.value
         else:
-            return " "
+            return CellValueAsString.NOT_REVEALED.value
 
     # UNITARY SETTERS
     def toggle_flag_cell(self, cell_coord: Point2D) -> None:

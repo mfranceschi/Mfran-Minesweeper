@@ -7,7 +7,7 @@ from controller.controller import Controller
 from model.utils import Point2D
 from .controls import ControlsWidget
 from .grid_view import GridView
-from .gui import GUI
+from .gui import CellValue, GUI
 
 WIN_WIDTH = 500
 
@@ -37,7 +37,7 @@ class GUIImpl(GUI):
         self.bottom_frame.grid(column=0, row=1)
 
     @overrides
-    def set_grid(self, grid: List[str]) -> None:
+    def set_grid(self, grid: List[CellValue]) -> None:
         self.grid_view.set_grid(grid)
 
     def on_left_click_on_cell(self, cell_coord: Point2D):
