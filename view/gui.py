@@ -1,8 +1,9 @@
-from abc import abstractmethod, ABC
-from model.utils import Point2D
+from abc import ABC, abstractmethod
 from typing import List
 
 from overrides import EnforceOverrides
+
+from model.utils import Point2D
 
 
 class GUI(ABC, EnforceOverrides):
