@@ -19,10 +19,9 @@ class GUIImpl(GUI):
 
     def __init__(
             self,
-            grid_x: int, grid_y: int,
-            controller: Controller = None,) -> None:
-        self.grid_x = grid_x
-        self.grid_y = grid_y
+            grid_dim: Point2D,
+            controller: Controller = None
+    ) -> None:
         self.controller = controller
 
         self.root = tk.Tk()
@@ -31,7 +30,7 @@ class GUIImpl(GUI):
         self.elapsed_time_text = tk.StringVar(master=self.root, value="")
         self._update_elapsed_time_text()
 
-        self.grid_view = self.make_grid_view()
+        self.grid_view = self.make_grid_view(dim=grid_dim)
         self.grid_view.grid(column=0, row=0)
 
         self.bottom_frame = self.make_controls_widget()
@@ -55,11 +54,9 @@ class GUIImpl(GUI):
         self.root.after(800, self._update_elapsed_time_text)
 
     @overrides
-    def reset_grid_size(self, grid_x: int, grid_y: int) -> None:
+    def reset_grid_size(self, grid_dim: Point2D) -> None:
         self.grid_view.destroy()
-        self.grid_x = grid_x
-        self.grid_y = grid_y
-        self.grid_view = self.make_grid_view()
+        self.grid_view = self.make_grid_view(dim=grid_dim)
         self.grid_view.grid(row=0, column=0)
 
     @overrides
@@ -78,14 +75,14 @@ class GUIImpl(GUI):
     def game_starts(self) -> None:
         self.root.configure(bg="sky blue")
 
-    def make_grid_view(self) -> GridView:
+    def make_grid_view(self, dim: Point2D) -> GridView:
         return GridView(
             master=self.root,
             height=WIN_WIDTH,
             bg="red",
 
-            size_x=self.grid_x,
-            size_y=self.grid_y,
+            size_x=dim.x,
+            size_y=dim.y,
             on_left_click=self.on_left_click_on_cell,
             on_right_click=self.on_right_click_on_cell,
         )

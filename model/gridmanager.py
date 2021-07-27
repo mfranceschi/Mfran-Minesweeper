@@ -11,8 +11,8 @@ class GridManager:
     Manages a grid and provides convenience access methods.
     """
 
-    def __init__(self, grid_x: int = 10, grid_y: int = 10):
-        self._grid: Grid = GridImplWithPythonList(Point2D(grid_x, grid_y))
+    def __init__(self, grid_dim: Point2D):
+        self._grid: Grid = GridImplWithPythonList(grid_dim)
         self.nbr_mines = 0
 
     # GETTERS

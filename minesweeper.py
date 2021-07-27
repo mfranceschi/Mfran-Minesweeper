@@ -6,8 +6,7 @@ from view.gui_impl import GUIImpl
 
 controller = ControllerImpl()
 gui = GUIImpl(
-    grid_x=controller.difficulty.grid_x,
-    grid_y=controller.difficulty.grid_y,
+    grid_dim=controller.difficulty.grid_dim,
     controller=controller
 )
 controller.init_gui(gui)

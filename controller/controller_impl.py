@@ -61,16 +61,15 @@ class ControllerImpl(Controller):
         if difficulty_level:
             self.set_difficulty(difficulty_level)
 
-        grid_x = self.difficulty.grid_x
-        grid_y = self.difficulty.grid_y
+        grid_dim = self.difficulty.grid_dim
         nbr_mines = self.difficulty.nbr_mines
 
-        self.grid_manager = GridManager(grid_x, grid_y)
+        self.grid_manager = GridManager(grid_dim)
         self.grid_manager.fill_with_mines(
             nbr_mines=nbr_mines,
-            procedure=RandomGridFiller(grid_x, grid_y)
+            procedure=RandomGridFiller(grid_dim)
         )
-        self.gui.reset_grid_size(grid_x, grid_y)
+        self.gui.reset_grid_size(grid_dim)
         self.gui.set_nbr_mines(nbr_mines)
         self.gui.set_grid(self.grid_manager.get_grid_for_display())
         self._start_game()

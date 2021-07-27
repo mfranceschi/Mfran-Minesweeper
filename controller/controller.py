@@ -12,17 +12,16 @@ class DifficultyLevel:
     A level of difficulty is defined by the grid size and the number of mines.
     """
     nbr_mines: int
-    grid_x: int
-    grid_y: int
+    grid_dim: Point2D
 
 
 class DifficultyLevels(Enum):
     """
     Enumeration of known difficulty levels.
     """
-    EASY = DifficultyLevel(nbr_mines=10, grid_x=8, grid_y=8)
-    INTERMEDIATE = DifficultyLevel(nbr_mines=40, grid_x=16, grid_y=16)
-    EXPERT = DifficultyLevel(nbr_mines=99, grid_x=30, grid_y=16)
+    EASY = DifficultyLevel(nbr_mines=10, grid_dim=Point2D(8, 8))
+    INTERMEDIATE = DifficultyLevel(nbr_mines=40, grid_dim=Point2D(16, 16))
+    EXPERT = DifficultyLevel(nbr_mines=99, grid_dim=Point2D(30, 16))
 
 
 class Controller:

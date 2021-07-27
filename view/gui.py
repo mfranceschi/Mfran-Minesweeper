@@ -1,4 +1,5 @@
 from abc import abstractmethod, ABC
+from model.utils import Point2D
 from typing import List
 
 from overrides import EnforceOverrides
@@ -10,7 +11,7 @@ class GUI(ABC, EnforceOverrides):
     """
 
     @abstractmethod
-    def reset_grid_size(self, grid_x: int, grid_y: int) -> None:
+    def reset_grid_size(self, grid_dim: Point2D) -> None:
         raise NotImplementedError()
 
     @abstractmethod
