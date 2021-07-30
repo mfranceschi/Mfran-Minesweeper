@@ -11,7 +11,6 @@ class NewGameButton(tk.Button):
 
     def __init__(self, *args, **kwargs):
         super().__init__(background="yellow", *args, **kwargs)
-        self.grid(row=0, column=0, columnspan=2)
 
 
 class NbrMinesLabel(tk.Label):
@@ -21,7 +20,6 @@ class NbrMinesLabel(tk.Label):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.grid(row=0, column=2, padx=20)
 
     @staticmethod
     def _make_string_for_nbr_mines(nbr: int) -> str:
@@ -44,7 +42,6 @@ class DifficultyChoice(tk.Frame):
     ):
         super().__init__(*args, **kwargs)
         self.on_new_difficulty = on_new_difficulty
-        self.grid(row=0, column=3, padx=20)
 
         self.listbox = tk.Listbox(
             master=self, selectmode=tk.SINGLE, width=0, height=0)
@@ -70,7 +67,6 @@ class ElapsedTimeLabel(tk.Label):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.grid(row=0, column=4)
 
 
 class ControlsWidget(tk.Frame):
@@ -84,15 +80,19 @@ class ControlsWidget(tk.Frame):
 
         self.new_game_button = NewGameButton(
             master=self, command=controller.on_new_game, text="New game")
+        self.new_game_button.grid(row=0, column=0, columnspan=2)
 
         self.nbr_mines_label = NbrMinesLabel(master=self)
         self.nbr_mines_label.set_nbr_mines(controller.get_nbr_mines())
+        self.nbr_mines_label.grid(row=0, column=2, padx=20)
 
         self.difficulty_choice = DifficultyChoice(
             master=self, on_new_difficulty=controller.on_new_game)
+        self.difficulty_choice .grid(row=0, column=3, padx=20)
 
         self.elapsed_time_label = ElapsedTimeLabel(
             master=self, textvariable=elapsed_time_text)
+        self.elapsed_time_label.grid(row=0, column=4)
 
     def set_nbr_mines(self, nbr: int) -> None:
         self.nbr_mines_label.set_nbr_mines(nbr)
