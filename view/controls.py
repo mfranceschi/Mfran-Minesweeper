@@ -69,6 +69,11 @@ class ElapsedTimeLabel(tk.Label):
         super().__init__(*args, **kwargs)
 
 
+class ColourPaletteChoice(tk.Frame):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
 class ControlsWidget(tk.Frame):
     """
     Wraps some cool widgets that display stuff or provide the user with input items.
@@ -76,23 +81,23 @@ class ControlsWidget(tk.Frame):
 
     def __init__(self, controller: Controller, elapsed_time_text: tk.StringVar, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.configure(padx=15, pady=15, background="white")
+        self.configure(padx=15, pady=15, background="light cyan")
 
         self.new_game_button = NewGameButton(
             master=self, command=controller.on_new_game, text="New game")
-        self.new_game_button.grid(row=0, column=0, columnspan=2)
+        self.new_game_button.grid(row=0, column=0, rowspan=2)
 
         self.nbr_mines_label = NbrMinesLabel(master=self)
         self.nbr_mines_label.set_nbr_mines(controller.get_nbr_mines())
-        self.nbr_mines_label.grid(row=0, column=2, padx=20)
-
-        self.difficulty_choice = DifficultyChoice(
-            master=self, on_new_difficulty=controller.on_new_game)
-        self.difficulty_choice .grid(row=0, column=3, padx=20)
+        self.nbr_mines_label.grid(row=2, column=0, pady=5)
 
         self.elapsed_time_label = ElapsedTimeLabel(
             master=self, textvariable=elapsed_time_text)
-        self.elapsed_time_label.grid(row=0, column=4)
+        self.elapsed_time_label.grid(row=3, column=0, pady=5)
+
+        self.difficulty_choice = DifficultyChoice(
+            master=self, on_new_difficulty=controller.on_new_game)
+        self.difficulty_choice .grid(row=4, column=0, pady=20)
 
     def set_nbr_mines(self, nbr: int) -> None:
         self.nbr_mines_label.set_nbr_mines(nbr)

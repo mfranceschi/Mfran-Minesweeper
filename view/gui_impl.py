@@ -30,11 +30,9 @@ class GUIImpl(GUI):
         self.elapsed_time_text = tk.StringVar(master=self.root, value="")
         self._update_elapsed_time_text()
 
-        self.grid_view = self.make_grid_view(dim=grid_dim)
-        self.grid_view.grid(column=0, row=0)
+        self.make_controls_widget()
 
-        self.bottom_frame = self.make_controls_widget()
-        self.bottom_frame.grid(column=0, row=1)
+        self.make_grid_view(dim=grid_dim)
 
     @overrides
     def set_grid(self, grid: List[CellValue]) -> None:
@@ -56,12 +54,12 @@ class GUIImpl(GUI):
     @overrides
     def reset_grid_size(self, grid_dim: Point2D) -> None:
         self.grid_view.destroy()
-        self.grid_view = self.make_grid_view(dim=grid_dim)
-        self.grid_view.grid(row=0, column=0)
+        self.make_grid_view(dim=grid_dim)
 
     @overrides
     def set_nbr_mines(self, nbr_mines: int) -> None:
-        self.bottom_frame.set_nbr_mines(nbr_mines)
+        # TODO USE TK VARIABLE
+        self.controls_widget.set_nbr_mines(nbr_mines)
 
     @overrides
     def victory(self) -> None:
@@ -76,7 +74,7 @@ class GUIImpl(GUI):
         self.root.configure(bg="sky blue")
 
     def make_grid_view(self, dim: Point2D) -> GridView:
-        return GridView(
+        self.grid_view = GridView(
             master=self.root,
             height=WIN_WIDTH,
             bg="red",
@@ -86,9 +84,10 @@ class GUIImpl(GUI):
             on_left_click=self.on_left_click_on_cell,
             on_right_click=self.on_right_click_on_cell,
         )
+        self.grid_view.grid(column=1, row=0)
 
     def make_controls_widget(self) -> ControlsWidget:
-        return ControlsWidget(
+        self.controls_widget = ControlsWidget(
             master=self.root,
             height=30,
             bg="blue",
@@ -96,3 +95,4 @@ class GUIImpl(GUI):
             controller=self.controller,
             elapsed_time_text=self.elapsed_time_text,
         )
+        self.controls_widget.grid(column=0, row=0)

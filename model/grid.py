@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from collections.abc import Iterator
+from functools import cache
 from typing import Iterable, Tuple
 
 from overrides.enforce import EnforceOverrides
@@ -30,6 +31,7 @@ class Grid(ABC, EnforceOverrides):
     def get_neighbours(self, cell: Point2D) -> Iterable[Cell]:
         raise NotImplementedError()
 
+    @cache
     def get_nb_of_close_mines(self, cell_coord: Point2D) -> int:
         assert not self.get_cell_has_mine(cell_coord)
         return sum((cell.has_mine for cell in self.get_neighbours(cell_coord)))
