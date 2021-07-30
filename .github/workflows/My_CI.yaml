@@ -28,7 +28,8 @@ jobs:
         run: pylint **/*.py
 
       - name: Run mypy
-        run: mypy **/*.py
+        if: always()
+        run: mypy ./minesweeper.py
 
       - name: Run tests
         if: always()
