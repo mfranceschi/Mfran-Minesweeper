@@ -1,21 +1,10 @@
 from abc import ABC, abstractmethod
-from enum import Enum
-from typing import List, Union
+from typing import List
 
 from overrides import EnforceOverrides
 
+from model.cell import CellValue
 from model.utils import Point2D
-
-
-class CellValueAsString(Enum):
-    """Simple enum with the possible string values of a CellValue."""
-    REVEALED_ZERO_NEIGHBOUR = "0"
-    FLAGGED = "F"
-    MINE = "M"
-    NOT_REVEALED = " "
-
-
-CellValue = Union[int, CellValueAsString]
 
 
 class GUI(ABC, EnforceOverrides):

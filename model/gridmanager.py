@@ -1,7 +1,6 @@
-from typing import Callable, List
-from view.gui import CellValue, CellValueAsString
+from typing import Callable, List, Set
 
-from .cell import Cell
+from .cell import Cell, CellValue, CellValueAsString
 from .fill_grid import fill_grid_dummy
 from .grid import Grid
 from .grid_impl_with_python_list import GridImplWithPythonList
@@ -62,7 +61,7 @@ class GridManager:
         assert len([cell for cell in self._grid if cell.has_mine]) == self.nbr_mines, \
             "Unexpected number of cells with a mine after filling the grid!"
 
-    def reveal_all(self) -> List[str]:
+    def reveal_all(self) -> List[CellValue]:
         for cell in self._grid:
             cell.is_revealed = True
         return self.get_grid_for_display()
@@ -75,7 +74,7 @@ class GridManager:
 
         def __init__(self, grid: Grid) -> None:
             self.grid = grid
-            self.explored_no_neighbours = set()
+            self.explored_no_neighbours: Set[Point2D] = set()
 
         def run(self, cell_coord: Point2D) -> None:
             self.explored_no_neighbours.add(cell_coord)

@@ -1,9 +1,9 @@
 import tkinter as tk
 from typing import Callable, List
 
+from model.cell import CellValue
 from model.utils import Point2D
 from view.cell_view import CellView
-from view.gui import CellValue
 
 
 class GridView(tk.Frame):
@@ -13,9 +13,9 @@ class GridView(tk.Frame):
 
     def __init__(
             self,
-            size_x: int = 5, size_y: int = 5,
-            on_left_click: Callable[[Point2D], None] = None,
-            on_right_click: Callable[[Point2D], None] = None,
+            size_x: int, size_y: int,
+            on_left_click: Callable[[Point2D], None],
+            on_right_click: Callable[[Point2D], None],
             **kwargs) -> None:
         super().__init__(**kwargs)
         self.size_x = size_x
@@ -28,7 +28,7 @@ class GridView(tk.Frame):
         for column_index in range(self.size_x):
             self.columnconfigure(column_index, minsize=25, weight=1)
 
-        self.buttons: List[CellView] = [None] * size_x * size_y
+        self.buttons: List[CellView] = []
 
         for row_index in range(self.size_y):
             for column_index in range(self.size_x):
@@ -41,7 +41,7 @@ class GridView(tk.Frame):
                     on_right_click=self.on_right_click)
                 button.widget.grid(
                     row=row_index, column=column_index, sticky="nsew")
-                self.buttons[self._index_of_point(coord)] = button
+                self.buttons.append(button)
 
     def _index_of_point(self, point: Point2D) -> int:
         return point.y * self.size_x + point.x

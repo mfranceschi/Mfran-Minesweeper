@@ -1,5 +1,5 @@
 import tkinter as tk
-from typing import Callable
+from typing import Any, Callable
 
 from controller.controller import Controller, DifficultyLevel, DifficultyLevels
 
@@ -9,9 +9,8 @@ class NewGameButton(tk.Button):
     Wraps a button. On click, calls the given command to start a new game.
     """
 
-    def __init__(self, master, command, *args, **kwargs):
-        super().__init__(master=master, command=command,
-                         background="yellow", *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(background="yellow", *args, **kwargs)
         self.grid(row=0, column=0, columnspan=2)
 
 
@@ -20,8 +19,8 @@ class NbrMinesLabel(tk.Label):
     Wraps a label with the number of mines.
     """
 
-    def __init__(self, master, *args, **kwargs):
-        super().__init__(master=master, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.grid(row=0, column=2, padx=20)
 
     @staticmethod
@@ -40,11 +39,10 @@ class DifficultyChoice(tk.Frame):
 
     def __init__(
         self,
-        master,
         on_new_difficulty: Callable[[DifficultyLevel], None],
-        *args, **kwargs
+        *args: Any, **kwargs: Any
     ):
-        super().__init__(master=master, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.on_new_difficulty = on_new_difficulty
         self.grid(row=0, column=3, padx=20)
 
@@ -70,8 +68,8 @@ class ElapsedTimeLabel(tk.Label):
     Wraps a label with the elapsed time, straight from the text variable.
     """
 
-    def __init__(self, master, text_variable: tk.StringVar, *args, **kwargs):
-        super().__init__(master=master, textvariable=text_variable, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.grid(row=0, column=4)
 
 
@@ -94,7 +92,7 @@ class ControlsWidget(tk.Frame):
             master=self, on_new_difficulty=controller.on_new_game)
 
         self.elapsed_time_label = ElapsedTimeLabel(
-            master=self, text_variable=elapsed_time_text)
+            master=self, textvariable=elapsed_time_text)
 
     def set_nbr_mines(self, nbr: int) -> None:
         self.nbr_mines_label.set_nbr_mines(nbr)

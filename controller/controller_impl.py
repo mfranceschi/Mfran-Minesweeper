@@ -20,8 +20,8 @@ class ControllerImpl(Controller):
     INITIAL_DIFFICULTY = DifficultyLevels.EASY
 
     def __init__(self) -> None:
-        self.gui: GUI = None
-        self.grid_manager: GridManager = None
+        self.gui: GUI
+        self.grid_manager: GridManager
         self.difficulty: DifficultyLevel
         self.game_is_running: bool
         self.set_difficulty(self.INITIAL_DIFFICULTY.value)

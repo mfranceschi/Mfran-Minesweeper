@@ -20,7 +20,7 @@ class GUIImpl(GUI):
     def __init__(
             self,
             grid_dim: Point2D,
-            controller: Controller = None
+            controller: Controller
     ) -> None:
         self.controller = controller
 

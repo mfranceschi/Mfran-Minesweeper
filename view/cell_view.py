@@ -1,8 +1,8 @@
 import tkinter as tk
 from typing import Any, Callable, Dict
 
+from model.cell import CellValue, CellValueAsString
 from model.utils import Point2D
-from view.gui import CellValue, CellValueAsString
 
 
 class MyDefaultDict(dict):
@@ -51,7 +51,7 @@ class CellView:
         self.cell_coord = cell_coord
         self.on_left_click = on_left_click
         self.on_right_click = on_right_click
-        self.set_cell_value(CellValueAsString.NOT_REVEALED)
+        self.set_cell_value(CellValueAsString.NOT_REVEALED.value)
 
         self.widget.bind("<ButtonRelease>", self.handle_button_event)
 
