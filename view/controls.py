@@ -1,10 +1,11 @@
 import tkinter as tk
-from tkinter import Event, ttk
+from tkinter import ttk
 from typing import Any, Callable
-from view.cell_button_configurator import CellButtonConfigurator, MfranCellButtonConfigurator, WindowsXpCellButtonConfigurator
-from view.cell_view import CellView
 
 from controller.controller import Controller, DifficultyLevel, DifficultyLevels
+from view.cell_button_configurator import MfranCellButtonConfigurator, \
+    WindowsXpCellButtonConfigurator
+from view.cell_view import CellView
 
 
 class NewGameButton(tk.Button):
@@ -73,20 +74,26 @@ class ElapsedTimeLabel(tk.Label):
 
 
 class ColourPaletteChoice(tk.Frame):
-    def __init__(self, on_change: Callable[[str], None] = None, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """Widget with a label and a combo box for changing the colours of the grid."""
+
+    def __init__(self, on_change: Callable[[str], None] = None, **kwargs):
+        super().__init__(**kwargs)
         choices = ["Mfranceschi (default)", "Windows XP"]
 
         self.value = tk.StringVar(master=self, value=choices[0])
+
+        label = tk.Label(master=self, text="Change theme")
+        label.grid(column=0, row=0)
+
         self.combo_box = ttk.Combobox(
-            values=choices, textvariable=self.value,
-            *args, **kwargs)
+            master=self,
+            values=choices, textvariable=self.value,)
         self.combo_box.bind('<<ComboboxSelected>>',
                             self._handle_change)
-        self.combo_box.grid(row=0, column=0)
+        self.combo_box.grid(row=1, column=0)
         self.on_change = on_change
 
-    def _handle_change(self, event):
+    def _handle_change(self, _event):
         self.on_change(self.value.get())
 
 
@@ -95,7 +102,13 @@ class ControlsWidget(tk.Frame):
     Wraps some cool widgets that display stuff or provide the user with input items.
     """
 
-    def __init__(self, controller: Controller, elapsed_time_text: tk.StringVar, *args, **kwargs):
+    def __init__(
+            self,
+            controller: Controller,
+            elapsed_time_text: tk.StringVar,
+            refresh_grid: Callable[[], None],
+            *args, **kwargs
+    ):
         super().__init__(*args, **kwargs)
         self.configure(padx=15, pady=15, background="light cyan")
 
@@ -120,7 +133,7 @@ class ControlsWidget(tk.Frame):
                 CellView.cell_button_configurator = WindowsXpCellButtonConfigurator()
             else:
                 CellView.cell_button_configurator = MfranCellButtonConfigurator()
-            # TODO REFRESH GRID VIEW
+            refresh_grid()
 
         self.colour_palette_choice = ColourPaletteChoice(
             master=self, on_change=on_change_colour_palette)

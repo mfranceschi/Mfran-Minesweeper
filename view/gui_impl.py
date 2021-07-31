@@ -30,19 +30,12 @@ class GUIImpl(GUI):
         self.elapsed_time_text = tk.StringVar(master=self.root, value="")
         self._update_elapsed_time_text()
 
-        self.make_controls_widget()
-
         self.make_grid_view(dim=grid_dim)
+        self.make_controls_widget()
 
     @overrides
     def set_grid(self, grid: List[CellValue]) -> None:
         self.grid_view.set_grid(grid)
-
-    def on_left_click_on_cell(self, cell_coord: Point2D):
-        self.controller.on_left_click(cell_coord)
-
-    def on_right_click_on_cell(self, cell_coord: Point2D):
-        self.controller.on_right_click(cell_coord)
 
     def _update_elapsed_time_text(self):
         elapsed_seconds = self.controller.get_current_game_time()
@@ -81,8 +74,8 @@ class GUIImpl(GUI):
 
             size_x=dim.x,
             size_y=dim.y,
-            on_left_click=self.on_left_click_on_cell,
-            on_right_click=self.on_right_click_on_cell,
+            on_left_click=self.controller.on_left_click,
+            on_right_click=self.controller.on_right_click,
         )
         self.grid_view.grid(column=1, row=0)
 
@@ -94,5 +87,6 @@ class GUIImpl(GUI):
 
             controller=self.controller,
             elapsed_time_text=self.elapsed_time_text,
+            refresh_grid=lambda: self.grid_view.refresh()  # pylint: disable=unnecessary-lambda
         )
         self.controls_widget.grid(column=0, row=0)

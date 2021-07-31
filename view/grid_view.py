@@ -1,7 +1,7 @@
 import tkinter as tk
 from typing import Callable, List
 
-from model.cell import CellValue
+from model.cell import CellValue, CellValueAsString
 from model.utils import Point2D
 from view.cell_view import CellView
 
@@ -29,7 +29,6 @@ class GridView(tk.Frame):
             self.columnconfigure(column_index, minsize=25, weight=1)
 
         self.buttons: List[CellView] = []
-        self.contents: List[CellValue]
 
         for row_index in range(self.size_y):
             for column_index in range(self.size_x):
@@ -44,13 +43,16 @@ class GridView(tk.Frame):
                     row=row_index, column=column_index, sticky="nsew")
                 self.buttons.append(button)
 
+        self.cell_values: List[CellValue] = [
+            CellValueAsString.NOT_REVEALED.value] * len(self.buttons)
+
     def _index_of_point(self, point: Point2D) -> int:
         return point.y * self.size_x + point.x
 
     def set_grid(self, grid: List[CellValue]) -> None:
-        self.contents = grid
+        self.cell_values = grid
         for i, value in enumerate(grid):
             self.buttons[i].set_cell_value(value)
 
     def refresh(self) -> None:
-        self.set_grid(self.contents)
+        self.set_grid(self.cell_values)
