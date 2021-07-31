@@ -51,7 +51,6 @@ class GUIImpl(GUI):
 
     @overrides
     def set_nbr_mines(self, nbr_mines: int) -> None:
-        # TODO USE TK VARIABLE
         self.controls_widget.set_nbr_mines(nbr_mines)
 
     @overrides
