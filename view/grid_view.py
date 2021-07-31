@@ -29,6 +29,7 @@ class GridView(tk.Frame):
             self.columnconfigure(column_index, minsize=25, weight=1)
 
         self.buttons: List[CellView] = []
+        self.contents: List[CellValue]
 
         for row_index in range(self.size_y):
             for column_index in range(self.size_x):
@@ -47,5 +48,9 @@ class GridView(tk.Frame):
         return point.y * self.size_x + point.x
 
     def set_grid(self, grid: List[CellValue]) -> None:
+        self.contents = grid
         for i, value in enumerate(grid):
             self.buttons[i].set_cell_value(value)
+
+    def refresh(self) -> None:
+        self.set_grid(self.contents)

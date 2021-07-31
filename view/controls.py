@@ -1,5 +1,8 @@
 import tkinter as tk
+from tkinter import Event, ttk
 from typing import Any, Callable
+from view.cell_button_configurator import CellButtonConfigurator, MfranCellButtonConfigurator, WindowsXpCellButtonConfigurator
+from view.cell_view import CellView
 
 from controller.controller import Controller, DifficultyLevel, DifficultyLevels
 
@@ -70,8 +73,21 @@ class ElapsedTimeLabel(tk.Label):
 
 
 class ColourPaletteChoice(tk.Frame):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, on_change: Callable[[str], None] = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        choices = ["Mfranceschi (default)", "Windows XP"]
+
+        self.value = tk.StringVar(master=self, value=choices[0])
+        self.combo_box = ttk.Combobox(
+            values=choices, textvariable=self.value,
+            *args, **kwargs)
+        self.combo_box.bind('<<ComboboxSelected>>',
+                            self._handle_change)
+        self.combo_box.grid(row=0, column=0)
+        self.on_change = on_change
+
+    def _handle_change(self, event):
+        self.on_change(self.value.get())
 
 
 class ControlsWidget(tk.Frame):
@@ -97,7 +113,18 @@ class ControlsWidget(tk.Frame):
 
         self.difficulty_choice = DifficultyChoice(
             master=self, on_new_difficulty=controller.on_new_game)
-        self.difficulty_choice .grid(row=4, column=0, pady=20)
+        self.difficulty_choice.grid(row=4, column=0, pady=20)
+
+        def on_change_colour_palette(new_value: str):
+            if "XP" in new_value:
+                CellView.cell_button_configurator = WindowsXpCellButtonConfigurator()
+            else:
+                CellView.cell_button_configurator = MfranCellButtonConfigurator()
+            # TODO REFRESH GRID VIEW
+
+        self.colour_palette_choice = ColourPaletteChoice(
+            master=self, on_change=on_change_colour_palette)
+        self.colour_palette_choice.grid(row=5, column=0, pady=5)
 
     def set_nbr_mines(self, nbr: int) -> None:
         self.nbr_mines_label.set_nbr_mines(nbr)

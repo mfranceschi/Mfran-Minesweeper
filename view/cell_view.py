@@ -1,37 +1,9 @@
 import tkinter as tk
-from typing import Any, Callable, Dict
+from typing import Callable
 
 from model.cell import CellValue, CellValueAsString
 from model.utils import Point2D
-
-
-class MyDefaultDict(dict):
-    """
-    Helper class: like defaultdict but the factory takes the key as argument.
-    """
-
-    def __init__(self, factory: Callable[[Any], Any], *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.missing_factory = factory
-
-    def __missing__(self, key):
-        return self.missing_factory(key)
-
-
-def get_configure_contents_for_revealed_with_neighbours(cell_value):
-    return {"state": "disabled", "text": str(cell_value), "bg": "white"}
-
-
-WIDGET_CONFIGURE_CONTENTS: Dict[CellValue, dict] = MyDefaultDict(
-    get_configure_contents_for_revealed_with_neighbours,
-    {
-        CellValueAsString.FLAGGED.value: {"state": "disabled", "text": " ", "bg": "yellow"},
-        CellValueAsString.MINE.value: {"state": "normal", "text": " ", "bg": "red"},
-        CellValueAsString.REVEALED_ZERO_NEIGHBOUR.value: {
-            "state": "normal", "text": " ", "bg": "grey"},
-        CellValueAsString.NOT_REVEALED.value: {"state": "disabled", "text": " ", "bg": "blue"},
-    }
-)
+from .cell_button_configurator import CellButtonConfigurator, MfranCellButtonConfigurator
 
 
 class CellView:
@@ -39,6 +11,8 @@ class CellView:
     Wrapper class: configures a cell button.
     When the cell updates please set the "cell_value" string.
     """
+
+    cell_button_configurator: CellButtonConfigurator = MfranCellButtonConfigurator()
 
     def __init__(
             self,
@@ -64,5 +38,4 @@ class CellView:
             self.on_right_click(self.cell_coord)
 
     def set_cell_value(self, cell_value: CellValue) -> None:
-        data = WIDGET_CONFIGURE_CONTENTS[cell_value]
-        self.widget.configure(**data)
+        self.cell_button_configurator.configure_button(self.widget, cell_value)

@@ -73,7 +73,7 @@ class GUIImpl(GUI):
     def game_starts(self) -> None:
         self.root.configure(bg="sky blue")
 
-    def make_grid_view(self, dim: Point2D) -> GridView:
+    def make_grid_view(self, dim: Point2D) -> None:
         self.grid_view = GridView(
             master=self.root,
             height=WIN_WIDTH,
@@ -86,7 +86,7 @@ class GUIImpl(GUI):
         )
         self.grid_view.grid(column=1, row=0)
 
-    def make_controls_widget(self) -> ControlsWidget:
+    def make_controls_widget(self) -> None:
         self.controls_widget = ControlsWidget(
             master=self.root,
             height=30,
