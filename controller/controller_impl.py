@@ -39,6 +39,9 @@ class ControllerImpl(Controller):
 
     @overrides
     def on_left_click(self, cell_coord: Point2D) -> None:
+        if not self.grid_manager.check_cell_can_be_revealed(cell_coord):
+            return
+
         self.grid_manager.reveal_cell(cell_coord)
         if self.grid_manager.get_cell_has_mine(cell_coord):
             self._stop_game()
@@ -53,6 +56,9 @@ class ControllerImpl(Controller):
 
     @overrides
     def on_right_click(self, cell_coord: Point2D) -> None:
+        if not self.grid_manager.check_cell_can_be_flagged_or_unflagged(cell_coord):
+            return
+
         self.grid_manager.toggle_flag_cell(cell_coord)
         self.gui.set_grid(self.grid_manager.get_grid_for_display())
 

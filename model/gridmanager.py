@@ -99,3 +99,11 @@ class GridManager:
             self._grid.set_cell_revealed(cell_coord, True)
         if not cell.has_mine and self._grid.get_nb_of_close_mines(cell_coord) == 0:
             self.CellRevealer(grid=self._grid).run(cell_coord=cell_coord)
+
+    def check_cell_can_be_revealed(self, cell_coord: Point2D) -> bool:
+        cell = self._grid[cell_coord.x, cell_coord.y]
+        return not cell.is_revealed and not cell.is_flagged
+
+    def check_cell_can_be_flagged_or_unflagged(self, cell_coord: Point2D) -> bool:
+        cell = self._grid[cell_coord.x, cell_coord.y]
+        return not cell.is_revealed
