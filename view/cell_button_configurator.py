@@ -62,7 +62,7 @@ class MfranCellButtonConfigurator(CellButtonConfigurator):
 
     @overrides
     def _configure_for_mine(self, button: tk.Button):
-        button.configure(state=tk.NORMAL, text=" ", bg="red")
+        button.configure(state=tk.DISABLED, text=" ", bg="red")
 
     @overrides
     def _configure_for_zero_neighbour(self, button: tk.Button):
@@ -87,8 +87,8 @@ class WindowsXpCellButtonConfigurator(CellButtonConfigurator):
 
     @overrides
     def _configure_for_flagged(self, button: tk.Button):
-        button.configure(state=tk.DISABLED, text=" ",
-                         bg="dark gray")
+        button.configure(state=tk.NORMAL, text=" ",
+                         bg="yellow")
 
     @overrides
     def _configure_for_mine(self, button: tk.Button):
