@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import tkinter as tk
+from typing import final
 
 from overrides import overrides
 from overrides.enforce import EnforceOverrides
@@ -13,6 +14,7 @@ class CellButtonConfigurator(ABC, EnforceOverrides):  # pylint: disable=too-few-
     Handles the configuration of a button according to its cell value.
     """
 
+    @final
     def configure_button(self, button: tk.Button, cell_value: CellValue):
         if cell_value == CellValueAsString.NOT_REVEALED.value:
             self._configure_for_not_revealed(button)
@@ -23,7 +25,9 @@ class CellButtonConfigurator(ABC, EnforceOverrides):  # pylint: disable=too-few-
         elif cell_value == CellValueAsString.MINE.value:
             self._configure_for_mine(button)
         else:
-            self._configure_for_revealed_with_neighbours(button, cell_value)
+            assert isinstance(cell_value, int)
+            self._configure_for_revealed_with_neighbours(
+                button, nbr=cell_value)
 
     @abstractmethod
     def _configure_for_not_revealed(self, button: tk.Button):
@@ -42,12 +46,12 @@ class CellButtonConfigurator(ABC, EnforceOverrides):  # pylint: disable=too-few-
         pass
 
     @abstractmethod
-    def _configure_for_revealed_with_neighbours(self, button: tk.Button, nbr: CellValue):
+    def _configure_for_revealed_with_neighbours(self, button: tk.Button, nbr: int):
         pass
 
 
 class MfranCellButtonConfigurator(CellButtonConfigurator):
-    """Instance for Mfranceschi theme."""
+    """Configurator for Mfranceschi theme."""
 
     @overrides
     def _configure_for_not_revealed(self, button: tk.Button):
@@ -66,7 +70,7 @@ class MfranCellButtonConfigurator(CellButtonConfigurator):
         button.configure(state=tk.DISABLED, text=" ", bg="grey")
 
     @overrides
-    def _configure_for_revealed_with_neighbours(self, button: tk.Button, nbr: CellValue):
+    def _configure_for_revealed_with_neighbours(self, button: tk.Button, nbr: int):
         button.configure(
             state=tk.DISABLED,
             text=str(nbr),
@@ -76,7 +80,7 @@ class MfranCellButtonConfigurator(CellButtonConfigurator):
 
 
 class WindowsXpCellButtonConfigurator(CellButtonConfigurator):
-    """Instance for Windows XP version theme."""
+    """Configurator for Windows XP version theme."""
 
     @overrides
     def _configure_for_not_revealed(self, button: tk.Button):
@@ -85,20 +89,24 @@ class WindowsXpCellButtonConfigurator(CellButtonConfigurator):
 
     @overrides
     def _configure_for_flagged(self, button: tk.Button):
-        button.configure(state=tk.DISABLED, text=" ",
-                         bg="dark gray", image=get_flag_icon())
+        button.configure(state=tk.DISABLED, text="",
+                         bg="dark gray", image=get_flag_icon(),
+                         compound=tk.LEFT)
 
     @overrides
     def _configure_for_mine(self, button: tk.Button):
-        button.configure(state=tk.DISABLED, text=" ",
-                         bg="red", image=get_mine_icon())
+        button.configure(state=tk.DISABLED, text="",
+                         bg="red", image=get_mine_icon(),
+                         compound=tk.LEFT)
 
     @overrides
     def _configure_for_zero_neighbour(self, button: tk.Button):
         button.configure(state=tk.DISABLED, text=" ",
-                         bg="light gray", image=get_no_icon())
+                         bg="light gray", image=get_no_icon(),
+                         compound=tk.LEFT)
 
     @overrides
-    def _configure_for_revealed_with_neighbours(self, button: tk.Button, nbr: CellValue):
+    def _configure_for_revealed_with_neighbours(self, button: tk.Button, nbr: int):
         button.configure(state=tk.DISABLED, text=str(nbr),
-                         bg="white", image=get_no_icon())
+                         bg="white", image=get_no_icon(),
+                         compound=tk.LEFT)
