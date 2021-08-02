@@ -3,7 +3,8 @@ from typing import Iterable, List
 
 from overrides.overrides import overrides
 
-from .grid import Cell, Grid
+from .cell import Cell
+from .grid import Grid
 from .utils import Point2D
 
 

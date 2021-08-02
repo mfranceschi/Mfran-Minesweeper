@@ -30,14 +30,13 @@ class RandomGridFiller:
     My call method randomly fills the grid with no duplicates.
     """
 
-    def __init__(self, grid_x: int, grid_y: int) -> None:
-        self.grid_x = grid_x
-        self.grid_y = grid_y
+    def __init__(self, grid_dim: Point2D) -> None:
+        self.grid_dim = grid_dim
         self.placed_mines: Set[Tuple[int, int]] = set()
 
     def make_new_random_position(self) -> Tuple[int, int]:
-        return (random.randint(0, self.grid_x - 1),
-                random.randint(0, self.grid_y - 1))
+        return (random.randint(0, self.grid_dim.x - 1),
+                random.randint(0, self.grid_dim.y - 1))
 
     def make_position(self) -> Tuple[int, int]:
         position = self.make_new_random_position()

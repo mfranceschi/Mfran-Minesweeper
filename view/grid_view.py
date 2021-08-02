@@ -1,7 +1,9 @@
 import tkinter as tk
 from typing import Callable, List
 
+from model.cell import CellValue, CellValueAsString
 from model.utils import Point2D
+from view.cell_view import CellView
 
 
 class GridView(tk.Frame):
@@ -11,9 +13,9 @@ class GridView(tk.Frame):
 
     def __init__(
             self,
-            size_x: int = 5, size_y: int = 5,
-            on_left_click: Callable[[Point2D], None] = None,
-            on_right_click: Callable[[Point2D], None] = None,
+            size_x: int, size_y: int,
+            on_left_click: Callable[[Point2D], None],
+            on_right_click: Callable[[Point2D], None],
             **kwargs) -> None:
         super().__init__(**kwargs)
         self.size_x = size_x
@@ -26,75 +28,31 @@ class GridView(tk.Frame):
         for column_index in range(self.size_x):
             self.columnconfigure(column_index, minsize=25, weight=1)
 
-        self.grid_to_display: List[str] = ["0"] * (size_x * size_y)
-        self.buttons: List[self.Cell] = [None] * len(self.grid_to_display)
+        self.buttons: List[CellView] = []
 
         for row_index in range(self.size_y):
             for column_index in range(self.size_x):
                 coord = Point2D(x=column_index, y=row_index)
 
-                button = self.Cell(
+                button = CellView(
                     cell_coord=coord,
                     master=self,
                     on_left_click=self.on_left_click,
                     on_right_click=self.on_right_click)
-                button.grid(row=row_index, column=column_index, sticky="nsew")
-                self.buttons[self._index_of_point(coord)] = button
+                button.widget.grid(
+                    row=row_index, column=column_index, sticky="nsew")
+                self.buttons.append(button)
+
+        self.cell_values: List[CellValue] = [
+            CellValueAsString.NOT_REVEALED.value] * len(self.buttons)
 
     def _index_of_point(self, point: Point2D) -> int:
         return point.y * self.size_x + point.x
 
-    def set_grid(self, grid: List[str]) -> None:
+    def set_grid(self, grid: List[CellValue]) -> None:
+        self.cell_values = grid
         for i, value in enumerate(grid):
             self.buttons[i].set_cell_value(value)
 
-    class Cell(tk.Button):
-        """
-        Wrapper class: configures a cell button.
-        When the cell updates please set the "cell_value" string.
-        """
-
-        def __init__(
-                self,
-                cell_coord: Point2D,
-                master: tk.Widget,
-                on_left_click: Callable[[Point2D], None],
-                on_right_click: Callable[[Point2D], None]
-        ):
-            super().__init__(master=master)
-            self.cell_coord = cell_coord
-            self.on_left_click = on_left_click
-            self.on_right_click = on_right_click
-            self.set_cell_value(" ")
-
-            self.bind("<ButtonRelease>", self.handle_button_event)
-
-        def handle_button_event(self, event: tk.Event):
-            if event.num == 1:
-                # Left click
-                self.on_left_click(self.cell_coord)
-            elif event.num == 2 or event.num == 3:
-                # Middle or right click
-                self.on_right_click(self.cell_coord)
-
-        def set_cell_value(self, cell_value: str) -> None:
-            if cell_value == "0":
-                # Revealed, no neighbour
-                self.configure(bg="grey", text=" ", state="disabled")
-
-            elif cell_value == "F":
-                # Not revealed, flag
-                self.configure(bg="yellow", text=" ", state="normal")
-
-            elif cell_value == "M":
-                # Revealed, mine
-                self.configure(bg="red", text=" ", state="disabled")
-
-            elif cell_value == " ":
-                # Not revealed, no flag
-                self.configure(bg="blue", text=" ", state="normal")
-
-            else:
-                # Revealed, has neighbours
-                self.configure(
-                    bg='white', text=cell_value, state="disabled")
+    def refresh(self) -> None:
+        self.set_grid(self.cell_values)

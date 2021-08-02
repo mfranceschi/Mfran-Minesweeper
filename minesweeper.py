@@ -4,11 +4,15 @@ from controller.controller_impl import ControllerImpl
 from view.gui_impl import GUIImpl
 
 
-controller = ControllerImpl()
-gui = GUIImpl(
-    grid_x=controller.difficulty.grid_x,
-    grid_y=controller.difficulty.grid_y,
-    controller=controller
-)
-controller.init_gui(gui)
-gui.root.mainloop()
+def main() -> None:
+    controller = ControllerImpl()
+    gui = GUIImpl(
+        grid_dim=controller.difficulty.grid_dim,
+        controller=controller
+    )
+    controller.init_gui(gui)
+    gui.root.mainloop()
+
+
+if __name__ == "__main__":
+    main()

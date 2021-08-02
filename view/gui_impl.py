@@ -7,7 +7,7 @@ from controller.controller import Controller
 from model.utils import Point2D
 from .controls import ControlsWidget
 from .grid_view import GridView
-from .gui import GUI
+from .gui import CellValue, GUI
 
 WIN_WIDTH = 500
 
@@ -19,10 +19,9 @@ class GUIImpl(GUI):
 
     def __init__(
             self,
-            grid_x: int, grid_y: int,
-            controller: Controller = None,) -> None:
-        self.grid_x = grid_x
-        self.grid_y = grid_y
+            grid_dim: Point2D,
+            controller: Controller
+    ) -> None:
         self.controller = controller
 
         self.root = tk.Tk()
@@ -31,21 +30,12 @@ class GUIImpl(GUI):
         self.elapsed_time_text = tk.StringVar(master=self.root, value="")
         self._update_elapsed_time_text()
 
-        self.grid_view = self.make_grid_view()
-        self.grid_view.grid(column=0, row=0)
-
-        self.bottom_frame = self.make_controls_widget()
-        self.bottom_frame.grid(column=0, row=1)
+        self.make_grid_view(dim=grid_dim)
+        self.make_controls_widget()
 
     @overrides
-    def set_grid(self, grid: List[str]) -> None:
+    def set_grid(self, grid: List[CellValue]) -> None:
         self.grid_view.set_grid(grid)
-
-    def on_left_click_on_cell(self, cell_coord: Point2D):
-        self.controller.on_left_click(cell_coord)
-
-    def on_right_click_on_cell(self, cell_coord: Point2D):
-        self.controller.on_right_click(cell_coord)
 
     def _update_elapsed_time_text(self):
         elapsed_seconds = self.controller.get_current_game_time()
@@ -55,16 +45,13 @@ class GUIImpl(GUI):
         self.root.after(800, self._update_elapsed_time_text)
 
     @overrides
-    def reset_grid_size(self, grid_x: int, grid_y: int) -> None:
+    def reset_grid_size(self, grid_dim: Point2D) -> None:
         self.grid_view.destroy()
-        self.grid_x = grid_x
-        self.grid_y = grid_y
-        self.grid_view = self.make_grid_view()
-        self.grid_view.grid(row=0, column=0)
+        self.make_grid_view(dim=grid_dim)
 
     @overrides
     def set_nbr_mines(self, nbr_mines: int) -> None:
-        self.bottom_frame.set_nbr_mines(nbr_mines)
+        self.controls_widget.set_nbr_mines(nbr_mines)
 
     @overrides
     def victory(self) -> None:
@@ -78,24 +65,27 @@ class GUIImpl(GUI):
     def game_starts(self) -> None:
         self.root.configure(bg="sky blue")
 
-    def make_grid_view(self) -> GridView:
-        return GridView(
+    def make_grid_view(self, dim: Point2D) -> None:
+        self.grid_view = GridView(
             master=self.root,
             height=WIN_WIDTH,
             bg="red",
 
-            size_x=self.grid_x,
-            size_y=self.grid_y,
-            on_left_click=self.on_left_click_on_cell,
-            on_right_click=self.on_right_click_on_cell,
+            size_x=dim.x,
+            size_y=dim.y,
+            on_left_click=self.controller.on_left_click,
+            on_right_click=self.controller.on_right_click,
         )
+        self.grid_view.grid(column=1, row=0)
 
-    def make_controls_widget(self) -> ControlsWidget:
-        return ControlsWidget(
+    def make_controls_widget(self) -> None:
+        self.controls_widget = ControlsWidget(
             master=self.root,
             height=30,
             bg="blue",
 
             controller=self.controller,
             elapsed_time_text=self.elapsed_time_text,
+            refresh_grid=lambda: self.grid_view.refresh()  # pylint: disable=unnecessary-lambda
         )
+        self.controls_widget.grid(column=0, row=0)

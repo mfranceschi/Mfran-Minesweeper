@@ -1,7 +1,8 @@
-from typing import Callable, List
+from typing import Callable, List, Set
 
+from .cell import Cell, CellValue, CellValueAsString
 from .fill_grid import fill_grid_dummy
-from .grid import Cell, Grid
+from .grid import Grid
 from .grid_impl_with_python_list import GridImplWithPythonList
 from .utils import Point2D
 
@@ -11,12 +12,12 @@ class GridManager:
     Manages a grid and provides convenience access methods.
     """
 
-    def __init__(self, grid_x: int = 10, grid_y: int = 10):
-        self._grid: Grid = GridImplWithPythonList(Point2D(grid_x, grid_y))
+    def __init__(self, grid_dim: Point2D):
+        self._grid: Grid = GridImplWithPythonList(grid_dim)
         self.nbr_mines = 0
 
     # GETTERS
-    def get_grid_for_display(self) -> List[str]:
+    def get_grid_for_display(self) -> List[CellValue]:
         return [self._cell_to_string(cell) for cell in self._grid]
 
     def get_cell_has_mine(self, cell_coord: Point2D) -> bool:
@@ -25,17 +26,17 @@ class GridManager:
     def get_count_of_not_revealed_cells(self) -> int:
         return len([cell for cell in self._grid if not cell.is_revealed])
 
-    def _cell_to_string(self, cell: Cell) -> str:
+    def _cell_to_string(self, cell: Cell) -> CellValue:
         if cell.is_revealed:
             if cell.has_mine:
-                return "M"
+                return CellValueAsString.MINE.value
             else:
-                neighbours = self._grid.get_nb_of_close_mines(cell.pos)
-                return str(neighbours)
+                close_mines = self._grid.get_nb_of_close_mines(cell.pos)
+                return close_mines if close_mines else "0"
         elif cell.is_flagged:
-            return "F"
+            return CellValueAsString.FLAGGED.value
         else:
-            return " "
+            return CellValueAsString.NOT_REVEALED.value
 
     # UNITARY SETTERS
     def toggle_flag_cell(self, cell_coord: Point2D) -> None:
@@ -60,7 +61,7 @@ class GridManager:
         assert len([cell for cell in self._grid if cell.has_mine]) == self.nbr_mines, \
             "Unexpected number of cells with a mine after filling the grid!"
 
-    def reveal_all(self) -> List[str]:
+    def reveal_all(self) -> List[CellValue]:
         for cell in self._grid:
             cell.is_revealed = True
         return self.get_grid_for_display()
@@ -73,7 +74,7 @@ class GridManager:
 
         def __init__(self, grid: Grid) -> None:
             self.grid = grid
-            self.explored_no_neighbours = set()
+            self.explored_no_neighbours: Set[Point2D] = set()
 
         def run(self, cell_coord: Point2D) -> None:
             self.explored_no_neighbours.add(cell_coord)
@@ -98,3 +99,11 @@ class GridManager:
             self._grid.set_cell_revealed(cell_coord, True)
         if not cell.has_mine and self._grid.get_nb_of_close_mines(cell_coord) == 0:
             self.CellRevealer(grid=self._grid).run(cell_coord=cell_coord)
+
+    def check_cell_can_be_revealed(self, cell_coord: Point2D) -> bool:
+        cell = self._grid[cell_coord.x, cell_coord.y]
+        return not cell.is_revealed and not cell.is_flagged
+
+    def check_cell_can_be_flagged_or_unflagged(self, cell_coord: Point2D) -> bool:
+        cell = self._grid[cell_coord.x, cell_coord.y]
+        return not cell.is_revealed
