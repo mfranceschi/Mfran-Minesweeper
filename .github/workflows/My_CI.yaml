@@ -26,6 +26,8 @@ jobs:
 
       - name: CHECKS - Linting
         run: pylint **/*.py
+        env: 
+          PYTHONPATH: src/
 
       - name: CHECKS - Static types
         if: always()
