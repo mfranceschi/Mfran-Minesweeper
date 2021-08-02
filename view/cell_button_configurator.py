@@ -6,7 +6,6 @@ from overrides import overrides
 from overrides.enforce import EnforceOverrides
 
 from model.cell import CellValue, CellValueAsString
-from .resources import get_flag_icon, get_mine_icon, get_no_icon
 
 
 class CellButtonConfigurator(ABC, EnforceOverrides):  # pylint: disable=too-few-public-methods
@@ -75,7 +74,6 @@ class MfranCellButtonConfigurator(CellButtonConfigurator):
             state=tk.DISABLED,
             text=str(nbr),
             bg="white",
-            image=get_no_icon(),
         )
 
 
@@ -85,28 +83,24 @@ class WindowsXpCellButtonConfigurator(CellButtonConfigurator):
     @overrides
     def _configure_for_not_revealed(self, button: tk.Button):
         button.configure(state=tk.NORMAL, text=" ",
-                         bg="dark gray", image=get_no_icon())
+                         bg="dark gray")
 
     @overrides
     def _configure_for_flagged(self, button: tk.Button):
-        button.configure(state=tk.DISABLED, text="",
-                         bg="dark gray", image=get_flag_icon(),
-                         compound=tk.LEFT)
+        button.configure(state=tk.DISABLED, text=" ",
+                         bg="dark gray")
 
     @overrides
     def _configure_for_mine(self, button: tk.Button):
-        button.configure(state=tk.DISABLED, text="",
-                         bg="red", image=get_mine_icon(),
-                         compound=tk.LEFT)
+        button.configure(state=tk.DISABLED, text=" ",
+                         bg="red")
 
     @overrides
     def _configure_for_zero_neighbour(self, button: tk.Button):
         button.configure(state=tk.DISABLED, text=" ",
-                         bg="light gray", image=get_no_icon(),
-                         compound=tk.LEFT)
+                         bg="light gray")
 
     @overrides
     def _configure_for_revealed_with_neighbours(self, button: tk.Button, nbr: int):
         button.configure(state=tk.DISABLED, text=str(nbr),
-                         bg="white", image=get_no_icon(),
-                         compound=tk.LEFT)
+                         bg="white")
