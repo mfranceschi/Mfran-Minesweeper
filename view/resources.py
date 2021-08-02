@@ -4,10 +4,10 @@ import pathlib
 from tkinter import PhotoImage
 from typing import Union
 
-_flag_icon_path: str = pathlib.Path(
-    (pathlib.Path(".").parent / "resources" / "flag.png").resolve())
-_mine_icon_path: str = pathlib.Path(
-    (pathlib.Path(".").parent / "resources" / "mine.png").resolve())
+_flag_icon_path = pathlib.Path(
+    pathlib.Path(".").parent / "resources" / "flag.png").resolve()
+_mine_icon_path = pathlib.Path(
+    pathlib.Path(".").parent / "resources" / "mine.png").resolve()
 
 
 @cache
