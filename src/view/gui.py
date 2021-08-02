@@ -3,8 +3,8 @@ from typing import List
 
 from overrides import EnforceOverrides
 
-from model.cell import CellValue
-from model.utils import Point2D
+from ..model.cell import CellValue
+from ..model.utils import Point2D
 
 
 class GUI(ABC, EnforceOverrides):

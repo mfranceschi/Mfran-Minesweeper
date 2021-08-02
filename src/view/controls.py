@@ -2,10 +2,10 @@ import tkinter as tk
 from tkinter import ttk
 from typing import Any, Callable
 
-from controller.controller import Controller, DifficultyLevel, DifficultyLevels
-from view.cell_button_configurator import MfranCellButtonConfigurator, \
+from ..controller.controller import Controller, DifficultyLevel, DifficultyLevels
+from ..view.cell_button_configurator import MfranCellButtonConfigurator, \
     WindowsXpCellButtonConfigurator
-from view.cell_view import CellView
+from .cell_view import CellView
 
 
 class NewGameButton(tk.Button):

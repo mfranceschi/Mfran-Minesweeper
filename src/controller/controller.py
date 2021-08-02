@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
-from model.utils import Point2D
-from view.gui import GUI
+from ..model.utils import Point2D
+from ..view.gui import GUI
 
 
 @dataclass(frozen=True)
