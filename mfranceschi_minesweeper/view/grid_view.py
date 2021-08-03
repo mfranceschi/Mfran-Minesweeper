@@ -1,9 +1,9 @@
 import tkinter as tk
 from typing import Callable, List
 
-from model.cell import CellValue, CellValueAsString
-from model.utils import Point2D
-from view.cell_view import CellView
+from ..model.cell import CellValue, CellValueAsString
+from ..model.utils import Point2D
+from .cell_view import CellView
 
 
 class GridView(tk.Frame):

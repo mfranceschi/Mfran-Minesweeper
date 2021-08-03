@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Union
 
-from model.utils import Point2D
+from .utils import Point2D
 
 
 class CellValueAsString(Enum):

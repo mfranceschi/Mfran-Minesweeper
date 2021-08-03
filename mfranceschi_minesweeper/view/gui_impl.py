@@ -3,8 +3,8 @@ from typing import List
 
 from overrides import overrides
 
-from controller.controller import Controller
-from model.utils import Point2D
+from ..controller.controller import Controller
+from ..model.utils import Point2D
 from .controls import ControlsWidget
 from .grid_view import GridView
 from .gui import CellValue, GUI

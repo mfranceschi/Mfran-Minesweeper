@@ -5,7 +5,7 @@ from typing import final
 from overrides import overrides
 from overrides.enforce import EnforceOverrides
 
-from model.cell import CellValue, CellValueAsString
+from ..model.cell import CellValue, CellValueAsString
 
 
 class CellButtonConfigurator(ABC, EnforceOverrides):  # pylint: disable=too-few-public-methods

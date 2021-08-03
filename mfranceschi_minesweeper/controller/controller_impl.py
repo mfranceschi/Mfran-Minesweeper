@@ -3,10 +3,10 @@ from typing import Optional
 
 from overrides import overrides
 
-from model.fill_grid import RandomGridFiller
-from model.gridmanager import GridManager
-from model.utils import Point2D
-from view.gui import GUI
+from ..model.fill_grid import RandomGridFiller
+from ..model.gridmanager import GridManager
+from ..model.utils import Point2D
+from ..view.gui import GUI
 
 from .controller import Controller, DifficultyLevel, DifficultyLevels
 

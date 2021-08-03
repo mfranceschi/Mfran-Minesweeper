@@ -26,10 +26,12 @@ jobs:
 
       - name: CHECKS - Linting
         run: pylint **/*.py
+        env: 
+          PYTHONPATH: mfranceschi_minesweeper/
 
       - name: CHECKS - Static types
         if: always()
-        run: mypy ./minesweeper.py
+        run: mypy ./mfranceschi_minesweeper/minesweeper.py
 
       - name: CHECKS - Tests
         if: always()

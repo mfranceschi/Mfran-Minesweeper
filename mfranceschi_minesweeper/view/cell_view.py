@@ -1,8 +1,8 @@
 import tkinter as tk
 from typing import Callable
 
-from model.cell import CellValue, CellValueAsString
-from model.utils import Point2D
+from ..model.cell import CellValue, CellValueAsString
+from ..model.utils import Point2D
 from .cell_button_configurator import CellButtonConfigurator, MfranCellButtonConfigurator
 
 

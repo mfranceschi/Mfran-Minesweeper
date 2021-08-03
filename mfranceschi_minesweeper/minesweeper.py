@@ -1,7 +1,7 @@
 # ENTRY POINT
 
-from controller.controller_impl import ControllerImpl
-from view.gui_impl import GUIImpl
+from .controller.controller_impl import ControllerImpl
+from .view.gui_impl import GUIImpl
 
 
 def main() -> None:
