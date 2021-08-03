@@ -40,3 +40,143 @@ jobs:
       - name: CHECKS - Ensure no print
         if: always()
         run: "! grep -Rl 'print(' --include=*.py"
+
+  main-job-3.8:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Git repo
+        uses: actions/checkout@v2
+
+      - name: SETUP - Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: SETUP - Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pylint mypy
+
+      - name: CHECKS - Linting
+        run: pylint **/*.py
+        env: 
+          PYTHONPATH: mfranceschi_minesweeper/
+
+      - name: CHECKS - Static types
+        if: always()
+        run: mypy ./mfranceschi_minesweeper/minesweeper.py
+
+      - name: CHECKS - Tests
+        if: always()
+        run: python -m pytest ./tests/
+
+      - name: CHECKS - Ensure no print
+        if: always()
+        run: "! grep -Rl 'print(' --include=*.py"
+
+  main-job-3.7:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Git repo
+        uses: actions/checkout@v2
+
+      - name: SETUP - Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - name: SETUP - Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pylint mypy
+
+      - name: CHECKS - Linting
+        run: pylint **/*.py
+        env: 
+          PYTHONPATH: mfranceschi_minesweeper/
+
+      - name: CHECKS - Static types
+        if: always()
+        run: mypy ./mfranceschi_minesweeper/minesweeper.py
+
+      - name: CHECKS - Tests
+        if: always()
+        run: python -m pytest ./tests/
+
+      - name: CHECKS - Ensure no print
+        if: always()
+        run: "! grep -Rl 'print(' --include=*.py"
+  
+  main-job-3.6:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Git repo
+        uses: actions/checkout@v2
+
+      - name: SETUP - Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.6
+
+      - name: SETUP - Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pylint mypy
+
+      - name: CHECKS - Linting
+        run: pylint **/*.py
+        env: 
+          PYTHONPATH: mfranceschi_minesweeper/
+
+      - name: CHECKS - Static types
+        if: always()
+        run: mypy ./mfranceschi_minesweeper/minesweeper.py
+
+      - name: CHECKS - Tests
+        if: always()
+        run: python -m pytest ./tests/
+
+      - name: CHECKS - Ensure no print
+        if: always()
+        run: "! grep -Rl 'print(' --include=*.py"
+  
+  main-job-3.5:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Git repo
+        uses: actions/checkout@v2
+
+      - name: SETUP - Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.5
+
+      - name: SETUP - Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pylint mypy
+
+      - name: CHECKS - Linting
+        run: pylint **/*.py
+        env: 
+          PYTHONPATH: mfranceschi_minesweeper/
+
+      - name: CHECKS - Static types
+        if: always()
+        run: mypy ./mfranceschi_minesweeper/minesweeper.py
+
+      - name: CHECKS - Tests
+        if: always()
+        run: python -m pytest ./tests/
+
+      - name: CHECKS - Ensure no print
+        if: always()
+        run: "! grep -Rl 'print(' --include=*.py"
