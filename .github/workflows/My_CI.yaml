@@ -41,7 +41,7 @@ jobs:
         if: always()
         run: "! grep -Rl 'print(' --include=*.py"
 
-  main-job-3.8:
+  main-job-3-8:
     runs-on: ubuntu-latest
 
     steps:
@@ -76,7 +76,7 @@ jobs:
         if: always()
         run: "! grep -Rl 'print(' --include=*.py"
 
-  main-job-3.7:
+  main-job-3-7:
     runs-on: ubuntu-latest
 
     steps:
@@ -111,7 +111,7 @@ jobs:
         if: always()
         run: "! grep -Rl 'print(' --include=*.py"
   
-  main-job-3.6:
+  main-job-3-6:
     runs-on: ubuntu-latest
 
     steps:
@@ -146,7 +146,7 @@ jobs:
         if: always()
         run: "! grep -Rl 'print(' --include=*.py"
   
-  main-job-3.5:
+  main-job-3-5:
     runs-on: ubuntu-latest
 
     steps:
