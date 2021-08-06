@@ -1,6 +1,6 @@
 name: My_CI
 
-on: [ pull_request ]
+on: [ push ]
 
 env:
   SOURCE_DIR: ./mfranceschi_minesweeper
@@ -70,6 +70,12 @@ jobs:
 
       - name: CHECK - Twine is happy
         run: twine check dist/*
+      
+      - name: CHECK - Install and use locally
+        run: |
+          ( echo "from setuptools import setup" && echo "setup()" ) > setup.py 
+          pip install -e .
+          ( echo "from mfranceschi_minesweeper.controller.controller_impl import ControllerImpl" ; echo "ControllerImpl().set_difficulty('easy')" ) | python
 
   check-without-python:
     runs-on: ubuntu-latest
