@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
-from collections.abc import Iterator
-from typing import Iterable, Tuple
+from typing import Iterable, Iterator, Tuple
 
 from overrides.enforce import EnforceOverrides
 
