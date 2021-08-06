@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 import tkinter as tk
-from typing import final
 
 from overrides import overrides
 from overrides.enforce import EnforceOverrides
 
 from ..model.cell import CellValue, CellValueAsString
+from ..model.utils import FinalDecorator
 
 
 class CellButtonConfigurator(ABC, EnforceOverrides):  # pylint: disable=too-few-public-methods
@@ -13,7 +13,7 @@ class CellButtonConfigurator(ABC, EnforceOverrides):  # pylint: disable=too-few-
     Handles the configuration of a button according to its cell value.
     """
 
-    @final
+    @FinalDecorator
     def configure_button(self, button: tk.Button, cell_value: CellValue):
         if cell_value == CellValueAsString.NOT_REVEALED.value:
             self._configure_for_not_revealed(button)
