@@ -33,17 +33,17 @@ jobs:
           pip install pylint mypy
 
       - name: CHECKS - Linting
-        if: steps.install-dependencies.conclusion == "success"
-        run: pylint **/*.py
+        if: ${{ steps.install-dependencies.conclusion == "success" }}
         env: 
           PYTHONPATH: ${{ env.SOURCE_DIR }}
+        run: pylint **/*.py
 
       - name: CHECKS - Static types
-        if: steps.install-dependencies.conclusion == "success"
+        if: ${{ steps.install-dependencies.conclusion == "success" }}
         run: mypy ${{ env.MAIN_FILE }}
 
       - name: CHECKS - Tests
-        if: steps.install-dependencies.conclusion == "success"
+        if: ${{ steps.install-dependencies.conclusion == "success" }}
         run: python -m pytest ${{ env.TESTS_DIR }}
 
   ensure-builds:
@@ -79,7 +79,7 @@ jobs:
           pip install -e .
           ( echo "from mfranceschi_minesweeper.controller.controller_impl import ControllerImpl" ; echo "ControllerImpl().set_difficulty('easy')" ) | python
 
-  checks-without-python:
+  misc-checks:
     runs-on: ubuntu-latest
 
     steps:
