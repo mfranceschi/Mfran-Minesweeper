@@ -6,8 +6,10 @@ env:
   PYTHON_VERSION: 3.9
 
 jobs:
-  main-job:
+  main-job-python-3-7:
     runs-on: ubuntu-latest
+    env:
+      PYTHON_VERSION: 3.7
 
     steps:
       - name: Checkout Git repo
@@ -37,12 +39,10 @@ jobs:
         if: always()
         run: python -m pytest ./tests/
 
-      - name: CHECKS - Ensure no print
-        if: always()
-        run: "! grep -Rl 'print(' --include=*.py"
-
-  main-job-3-8:
+  main-job-python-3-8:
     runs-on: ubuntu-latest
+    env:
+      PYTHON_VERSION: 3.8
 
     steps:
       - name: Checkout Git repo
@@ -51,7 +51,7 @@ jobs:
       - name: SETUP - Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: SETUP - Install dependencies
         run: |
@@ -72,8 +72,10 @@ jobs:
         if: always()
         run: python -m pytest ./tests/
 
-  main-job-3-7:
+  main-job-python-3-9:
     runs-on: ubuntu-latest
+    env:
+      PYTHON_VERSION: 3.9
 
     steps:
       - name: Checkout Git repo
@@ -82,7 +84,7 @@ jobs:
       - name: SETUP - Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.7
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: SETUP - Install dependencies
         run: |
