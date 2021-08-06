@@ -1,3 +1,3 @@
-from mfranceschi_minesweeper.main import main
+from src.main import main
 
 main()

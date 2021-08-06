@@ -3,8 +3,8 @@ name: My_CI
 on: [ push ]
 
 env:
-  SOURCE_DIR: ./mfranceschi_minesweeper
-  MAIN_FILE: ./mfranceschi_minesweeper/main.py
+  SOURCE_DIR: ./src
+  MAIN_FILE: ./src/main.py
   TESTS_DIR: ./tests/
 
 jobs:
