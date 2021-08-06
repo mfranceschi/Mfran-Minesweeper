@@ -1,12 +1,11 @@
 from abc import ABC, abstractmethod
 from collections.abc import Iterator
-from functools import cache
 from typing import Iterable, Tuple
 
 from overrides.enforce import EnforceOverrides
 
 from .cell import Cell
-from .utils import Point2D
+from .utils import Point2D, mfranceschi_get_cache_decorator
 
 
 class Grid(ABC, EnforceOverrides):
@@ -31,7 +30,7 @@ class Grid(ABC, EnforceOverrides):
     def get_neighbours(self, cell: Point2D) -> Iterable[Cell]:
         raise NotImplementedError()
 
-    @cache
+    @mfranceschi_get_cache_decorator()
     def get_nb_of_close_mines(self, cell_coord: Point2D) -> int:
         assert not self.get_cell_has_mine(cell_coord)
         return sum((cell.has_mine for cell in self.get_neighbours(cell_coord)))

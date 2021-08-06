@@ -180,3 +180,15 @@ jobs:
       - name: CHECKS - Ensure no print
         if: always()
         run: "! grep -Rl 'print(' --include=*.py"
+
+  check-without-python:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Git repo
+        uses: actions/checkout@v2
+
+      - name: CHECKS - Ensure no print
+        if: always()
+        run: "! grep -Rl 'print(' --include=*.py"
+
