@@ -2,13 +2,18 @@ name: My_CI
 
 on: [ pull_request ]
 
+env:
+  SOURCE_DIR: ./mfranceschi_minesweeper
+  MAIN_FILE: ./mfranceschi_minesweeper/main.py
+  TESTS_DIR: ./tests/
+
 jobs:
   main-job-python:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        python_version: [3.7, 3.8, 3.9]
+        PYTHON_VERSION: [3.7, 3.8, 3.9]
 
     steps:
       - name: Checkout Git repo
@@ -17,7 +22,7 @@ jobs:
       - name: SETUP - Python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python_version }}
+          python-version: ${{ matrix.PYTHON_VERSION }}
 
       - name: SETUP - Install dependencies
         run: |
@@ -28,15 +33,15 @@ jobs:
       - name: CHECKS - Linting
         run: pylint **/*.py
         env: 
-          PYTHONPATH: mfranceschi_minesweeper/
+          PYTHONPATH: ${{ env.SOURCE_DIR }}
 
       - name: CHECKS - Static types
         if: always()
-        run: mypy ./mfranceschi_minesweeper/minesweeper.py
+        run: mypy ${{ env.MAIN_FILE }}
 
       - name: CHECKS - Tests
         if: always()
-        run: python -m pytest ./tests/
+        run: python -m pytest ${{ env.TESTS_DIR }}
 
   check-without-python:
     runs-on: ubuntu-latest
