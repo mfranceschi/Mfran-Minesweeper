@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mfranceschi-minesweeper"
-version = "0.2.0"
+version = "0.2.1"
 description = "A cool minesweeper"
 authors = ["mfranceschi"]
 license = "MIT"
