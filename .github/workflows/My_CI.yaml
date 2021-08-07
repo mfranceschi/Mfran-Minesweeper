@@ -51,6 +51,7 @@ jobs:
 
     env:
       PYTHON_VERSION: 3.7
+      POETRY-VERSION: 1.1.7
 
     steps:
       - name: Checkout Git repo
@@ -65,18 +66,20 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install --upgrade build twine setuptools wheel
 
-      - name: CHECK - Build succeeds
-        run: python -m build
+      - name: SETUP - Install Poetry
+        uses: Gr1N/setup-poetry@v7
+        with:
+          poetry-version: ${{ env.POETRY_VERSION }}
 
-      - name: CHECK - Twine is happy
-        run: twine check dist/*
-      
+      - name: CHECK - Poetry check
+        run: poetry check
+
       - name: CHECK - Install and use locally
         run: |
-          ( echo "from setuptools import setup" && echo "setup()" ) > setup.py 
-          pip install -e .
+          poetry build
+          poetry update
+          poetry install
           ( echo "from mfranceschi_minesweeper.controller.controller_impl import ControllerImpl" ; echo "ControllerImpl().set_difficulty('easy')" ) | python
 
   misc-checks:
