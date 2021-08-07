@@ -18,11 +18,11 @@ classifiers = [
 include = ["*.txt", "Readme.md"]
 
 [tool.poetry.dependencies]
-python = ">= 3.7"
-overrides = "^6.1"
+python = "~3.7"
+overrides = "~6.1"
 
 [tool.poetry.dev-dependencies]
-pytest = ">= 6.2.4, < 7"
+pytest = "~6.2"
 
 [tool.poetry.scripts]
 mf-mines = "mfranceschi_minesweeper.main:main"
