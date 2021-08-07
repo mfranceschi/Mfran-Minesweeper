@@ -1,13 +1,56 @@
 name: My_CI
 
-on: [ push, pull_request ]
+on: [ push ]
 
 env:
-  PYTHON_VERSION: 3.9
+  SOURCE_DIR: ./mfranceschi_minesweeper
+  MAIN_FILE: ./mfranceschi_minesweeper/main.py
+  TESTS_DIR: ./tests/
 
 jobs:
-  main-job:
+  main-job-python:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        PYTHON_VERSION: [3.7, 3.8, 3.9]
+      fail-fast: false
+
+    steps:
+      - name: Checkout Git repo
+        uses: actions/checkout@v2
+
+      - name: SETUP - Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.PYTHON_VERSION }}
+
+      - name: SETUP - Install dependencies
+        id: install-dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pylint mypy
+
+      - name: CHECKS - Linting
+        if: ${{ steps.install-dependencies.conclusion == 'success' }}
+        env: 
+          PYTHONPATH: ${{ env.SOURCE_DIR }}
+        run: pylint **/*.py
+
+      - name: CHECKS - Static types
+        if: ${{ steps.install-dependencies.conclusion == 'success' }}
+        run: mypy ${{ env.MAIN_FILE }}
+
+      - name: CHECKS - Tests
+        if: ${{ steps.install-dependencies.conclusion == 'success' }}
+        run: python -m pytest ${{ env.TESTS_DIR }}
+
+  ensure-builds:
+    runs-on: ubuntu-latest
+
+    env:
+      PYTHON_VERSION: 3.7
 
     steps:
       - name: Checkout Git repo
@@ -17,25 +60,31 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-
+  
       - name: SETUP - Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pylint mypy
+          pip install --upgrade build twine setuptools wheel
 
-      - name: CHECKS - Linting
-        run: pylint **/*.py
-        env: 
-          PYTHONPATH: mfranceschi_minesweeper/
+      - name: CHECK - Build succeeds
+        run: python -m build
 
-      - name: CHECKS - Static types
-        if: always()
-        run: mypy ./mfranceschi_minesweeper/minesweeper.py
+      - name: CHECK - Twine is happy
+        run: twine check dist/*
+      
+      - name: CHECK - Install and use locally
+        run: |
+          ( echo "from setuptools import setup" && echo "setup()" ) > setup.py 
+          pip install -e .
+          ( echo "from mfranceschi_minesweeper.controller.controller_impl import ControllerImpl" ; echo "ControllerImpl().set_difficulty('easy')" ) | python
 
-      - name: CHECKS - Tests
-        if: always()
-        run: python -m pytest ./tests/
+  misc-checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Git repo
+        uses: actions/checkout@v2
 
       - name: CHECKS - Ensure no print
         if: always()

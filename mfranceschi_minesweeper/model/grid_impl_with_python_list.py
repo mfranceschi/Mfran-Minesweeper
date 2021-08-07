@@ -1,5 +1,4 @@
-from collections.abc import Iterator
-from typing import Iterable, List
+from typing import Iterable, Iterator, List
 
 from overrides.overrides import overrides
 
