@@ -78,6 +78,7 @@ jobs:
       - name: CHECK - Install and use locally
         run: |
           poetry build
+          poetry update
           poetry install
           ( echo "from mfranceschi_minesweeper.controller.controller_impl import ControllerImpl" ; echo "ControllerImpl().set_difficulty('easy')" ) | python
 
