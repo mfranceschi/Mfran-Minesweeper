@@ -1,4 +1,4 @@
-from typing import List, Set
+from typing import ClassVar, List, Set, Type
 
 from .cell import Cell, CellValue, CellValueAsString
 from .dummy_grid import DummyGrid
@@ -12,7 +12,7 @@ class GridManager:
     Manages a grid and provides convenience access methods.
     """
 
-    grid_impl: Grid = DummyGrid
+    grid_impl: ClassVar[Type[Grid]] = DummyGrid
 
     def __init__(self, grid_dim: Point2D):
         self._grid: Grid = self.grid_impl(grid_dim)

@@ -1,11 +1,11 @@
-from mfranceschi_minesweeper.model.dummy_grid import DummyGrid
-from mfranceschi_minesweeper.model.grid_impl_with_python_list import GridImplWithPythonList
 from time import time
 from typing import List, Optional
 
 from ..model.cell import CellValue
+from ..model.dummy_grid import DummyGrid
 from ..model.fill_grid import GridFiller
 from ..model.gridmanager import GridManager
+from ..model.grid_impl_with_python_list import GridImplWithPythonList
 from ..model.utils import Point2D
 from .controller import DifficultyLevel
 
@@ -49,7 +49,10 @@ class Game:
         return self.grid_manager.get_cell_has_mine(cell_coord)
 
     def reset_grid(self, fill_grid_procedure: Optional[GridFiller] = None) -> None:
-        GridManager.grid_impl = GridImplWithPythonList if fill_grid_procedure else DummyGrid
+        if fill_grid_procedure:
+            GridManager.grid_impl = GridImplWithPythonList
+        else:
+            GridManager.grid_impl = DummyGrid
         self.grid_manager = GridManager(self.grid_dim)
         if fill_grid_procedure:
             self.grid_manager.fill_with_mines(fill_grid_procedure)
