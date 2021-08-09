@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mfranceschi-minesweeper"
-version = "0.2.1"
+version = "0.2.2"
 description = "A cool minesweeper"
 authors = ["mfranceschi"]
 license = "MIT"
@@ -21,7 +21,7 @@ classifiers = [
 include = ["*.txt", "Readme.md"]
 
 [tool.poetry.dependencies]
-python = "~3.7"
+python = "^3.7"
 overrides = "~6.1"
 
 [tool.poetry.dev-dependencies]
