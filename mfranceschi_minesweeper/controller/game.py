@@ -16,6 +16,8 @@ class Game:
     It wraps helpers through methods and properties for hiding difficulty level and grid management.
     """
 
+    MINIMAL_REVEALED_CELLS_WITH_ZERO_NEIGHBOURS = 5
+
     def __init__(self, difficulty: DifficultyLevel):
         self.difficulty = difficulty
         self.grid_manager = GridManager(grid_dim=difficulty.grid_dim)
@@ -65,9 +67,11 @@ class Game:
             self.grid_manager = GridManager(self.grid_dim)
             self.grid_manager.fill_with_mines(fill_grid_procedure)
 
+            # In normal minesweepers the grid is generated so that
+            # the first user click is not on a mine + it reveals some cells around.
             while \
                     self.check_cell_has_mine(origin_cell_position) or \
-                    self.grid_manager.get_count_of_close_zero_neighbours_cells(origin_cell_position) <= 5:  # pylint: disable=line-too-long
+                    self.grid_manager.get_count_of_close_zero_neighbours_cells(origin_cell_position) <= self.MINIMAL_REVEALED_CELLS_WITH_ZERO_NEIGHBOURS:  # pylint: disable=line-too-long
                 self.grid_manager = GridManager(self.grid_dim)
                 self.grid_manager.fill_with_mines(fill_grid_procedure)
         else:
