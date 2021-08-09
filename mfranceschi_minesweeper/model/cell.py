@@ -36,5 +36,5 @@ class Cell:
         return self.pos.x
 
     @property
-    def y(self) -> str:  # pylint: disable=invalid-name
+    def y(self) -> int:  # pylint: disable=invalid-name
         return self.pos.y
