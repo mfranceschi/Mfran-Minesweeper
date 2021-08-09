@@ -54,14 +54,25 @@ class Game:
     def check_cell_has_mine(self, cell_coord: Point2D) -> bool:
         return self.grid_manager.get_cell_has_mine(cell_coord)
 
-    def reset_grid(self, fill_grid_procedure: Optional[GridFiller] = None) -> None:
+    def reset_grid(
+        self,
+        origin_cell_position: Point2D,
+        fill_grid_procedure: Optional[GridFiller] = None
+    ) -> None:
         if fill_grid_procedure:
             GridManager.grid_impl = GridImplWithPythonList
+
+            self.grid_manager = GridManager(self.grid_dim)
+            self.grid_manager.fill_with_mines(fill_grid_procedure)
+
+            while \
+                    self.check_cell_has_mine(origin_cell_position) or \
+                    self.grid_manager.get_count_of_close_zero_neighbours_cells(origin_cell_position) <= 5:  # pylint: disable=line-too-long
+                self.grid_manager = GridManager(self.grid_dim)
+                self.grid_manager.fill_with_mines(fill_grid_procedure)
         else:
             GridManager.grid_impl = DummyGrid
-        self.grid_manager = GridManager(self.grid_dim)
-        if fill_grid_procedure:
-            self.grid_manager.fill_with_mines(fill_grid_procedure)
+            self.grid_manager = GridManager(self.grid_dim)
 
     def reveal_all(self) -> None:
         self.grid_manager.reveal_all()

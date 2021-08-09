@@ -1,4 +1,3 @@
-from time import time
 from typing import Optional
 
 from overrides import overrides
@@ -38,6 +37,7 @@ class ControllerImpl(Controller):
     def on_left_click(self, cell_coord: Point2D) -> None:
         if not self.game_is_initiated:
             self.game.reset_grid(
+                origin_cell_position=cell_coord,
                 fill_grid_procedure=RandomGridFiller(
                     grid_dim=self.game.grid_dim,
                     nbr_mines=self.game.nbr_mines))
