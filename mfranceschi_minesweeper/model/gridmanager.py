@@ -60,6 +60,40 @@ class GridManager:
         for cell in self._grid:
             cell.is_revealed = True
 
+    def get_count_of_close_zero_neighbours_cells(self, starting_cell_pos: Point2D) -> int:
+        """
+        Returns the number of cells, including the 'starting_cell', 
+        which are neighbours to the 'starting_cell' and that have no close mines.
+        """
+        visited_cells: Set[Point2D] = set()
+
+        def visit_cell(cell_pos: Point2D):
+            """
+            If this cell has not been visited and has zero mines in the immediate neighbourhood,
+            mark it as visited and visit its neighbours.
+            """
+
+            if cell_pos in visited_cells or self._grid.get_nb_of_close_mines(cell_pos):
+                return
+
+            visited_cells.add(cell_pos)
+
+            if cell_pos.x != 0:
+                pos_to_check = Point2D(cell_pos.x-1, cell_pos.y)
+                visit_cell(pos_to_check)
+            if cell_pos.y != 0:
+                pos_to_check = Point2D(cell_pos.x, cell_pos.y-1)
+                visit_cell(pos_to_check)
+            if cell_pos.x != self._grid.dim.x - 1:
+                pos_to_check = Point2D(cell_pos.x+1, cell_pos.y)
+                visit_cell(pos_to_check)
+            if cell_pos.y != self._grid.dim.y - 1:
+                pos_to_check = Point2D(cell_pos.x, cell_pos.y+1)
+                visit_cell(pos_to_check)
+
+        visit_cell(starting_cell_pos)
+        return len(visited_cells)
+
     class CellRevealer:  # pylint: disable=too-few-public-methods
         """
         This class wraps the cell revealing logic if it has to be done recursively.

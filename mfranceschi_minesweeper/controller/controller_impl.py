@@ -1,4 +1,3 @@
-from time import time
 from typing import Optional
 
 from overrides import overrides
@@ -22,6 +21,7 @@ class ControllerImpl(Controller):
     def __init__(self) -> None:
         self.gui: GUI
         self.game = Game(difficulty=self.INITIAL_DIFFICULTY.value)
+        self.game_is_initiated = False
 
         self.game.start_game()
 
@@ -35,6 +35,16 @@ class ControllerImpl(Controller):
 
     @overrides
     def on_left_click(self, cell_coord: Point2D) -> None:
+        if not self.game_is_initiated:
+            self.game.reset_grid(
+                origin_cell_position=cell_coord,
+                fill_grid_procedure=RandomGridFiller(
+                    grid_dim=self.game.grid_dim,
+                    nbr_mines=self.game.nbr_mines))
+            self.game.start_game()
+            self.gui.game_starts()
+            self.game_is_initiated = True
+
         with do_after(self._update_gui):
             if self.game.reveal_cell_if_possible(cell_coord):
                 self._check_victory_or_defeat(cell_coord)
@@ -49,27 +59,22 @@ class ControllerImpl(Controller):
 
     @overrides
     def on_right_click(self, cell_coord: Point2D) -> None:
-        with do_after(self._update_gui):
-            self.game.toggle_flag_if_possible(cell_coord)
+        if self.game_is_initiated:
+            with do_after(self._update_gui):
+                self.game.toggle_flag_if_possible(cell_coord)
 
     @overrides
     def on_new_game(self, difficulty: Optional[DifficultyLevel] = None) -> None:
-        if not difficulty:
-            difficulty = self.game.difficulty
+        with do_after(self._update_gui):
+            if not difficulty:
+                difficulty = self.game.difficulty
 
-        self.game = Game(difficulty=difficulty)
-        self.game.reset_grid(
-            fill_grid_procedure=RandomGridFiller(
-                grid_dim=difficulty.grid_dim,
-                nbr_mines=difficulty.nbr_mines))
-        grid_dim = self.game.difficulty.grid_dim
-        nbr_mines = self.game.difficulty.nbr_mines
+            self.game = Game(difficulty=difficulty)
+            self.game_is_initiated = False
 
-        self.gui.reset_grid_size(grid_dim)
-        self.gui.set_nbr_mines(nbr_mines)
-        self._update_gui()
-        self.game.start_game()
-        self.gui.game_starts()
+            self.gui.reset_grid_size(self.game.grid_dim)
+            self.gui.set_nbr_mines(self.game.nbr_mines)
+            self.gui.game_starts()
 
     @ overrides
     def get_nbr_mines(self) -> int:
@@ -77,13 +82,7 @@ class ControllerImpl(Controller):
 
     @ overrides
     def get_current_game_time(self) -> float:
-        if self.game is not None:
-            if self.game.game_is_running:
-                return time() - self.game.game_starting_time
-            else:
-                return self.game.game_ending_time - self.game.game_starting_time
-        else:
-            return 0.
+        return self.game.get_game_time() if self.game_is_initiated else 0.
 
     def _update_gui(self) -> None:
         self.gui.set_grid(self.game.grid_for_display)
