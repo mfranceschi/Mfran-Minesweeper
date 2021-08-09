@@ -2,8 +2,8 @@ from typing import List, Tuple
 
 import pytest
 
-from model.grid import Cell, Grid
-from model.utils import Point2D
+from mfranceschi_minesweeper.model.grid import Cell, Grid
+from mfranceschi_minesweeper.utils import Point2D
 
 
 def test_it_has_correct_dimensions(grid_5_7: Grid):

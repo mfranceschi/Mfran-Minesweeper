@@ -3,8 +3,8 @@ from typing import Iterable, Iterator, Tuple
 
 from overrides.enforce import EnforceOverrides
 
+from ..utils import CacheDecorator, Point2D
 from .cell import Cell
-from .utils import CacheDecorator, Point2D
 
 
 class Grid(ABC, EnforceOverrides):

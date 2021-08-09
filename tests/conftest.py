@@ -1,8 +1,8 @@
 import pytest
 
-from model.grid import Grid
-from model.grid_impl_with_python_list import GridImplWithPythonList
-from model.utils import Point2D
+from mfranceschi_minesweeper.model.grid import Grid
+from mfranceschi_minesweeper.model.grid_impl_with_python_list import GridImplWithPythonList
+from mfranceschi_minesweeper.utils import Point2D
 
 
 @pytest.fixture

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
-from ..model.utils import Point2D
+from ..utils import Point2D
 from ..view.gui import GUI
 
 
@@ -33,7 +33,7 @@ class Controller:
     def init_gui(self, gui: GUI) -> None:
         raise NotImplementedError()
 
-    def on_new_game(self, difficulty_level: Optional[DifficultyLevel] = None) -> None:
+    def on_new_game(self, difficulty: Optional[DifficultyLevel] = None) -> None:
         raise NotImplementedError()
 
     def on_left_click(self, cell_coord: Point2D) -> None:

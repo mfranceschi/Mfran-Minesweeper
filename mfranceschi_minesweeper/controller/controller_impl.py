@@ -4,11 +4,11 @@ from typing import Optional
 from overrides import overrides
 
 from ..model.fill_grid import RandomGridFiller
-from ..model.gridmanager import GridManager
-from ..model.utils import Point2D
+from ..utils import do_after, Point2D
 from ..view.gui import GUI
 
 from .controller import Controller, DifficultyLevel, DifficultyLevels
+from .game import Game
 
 
 class ControllerImpl(Controller):
@@ -21,16 +21,12 @@ class ControllerImpl(Controller):
 
     def __init__(self) -> None:
         self.gui: GUI
-        self.grid_manager: GridManager
-        self.difficulty: DifficultyLevel
-        self.game_is_running: bool
-        self.set_difficulty(self.INITIAL_DIFFICULTY.value)
-        self.game_starting_time: float = time()
-        self.game_ending_time: float = time()
-        self._start_game()
+        self.game = Game(difficulty=self.INITIAL_DIFFICULTY.value)
+
+        self.game.start_game()
 
     def set_difficulty(self, level: DifficultyLevel):
-        self.difficulty = level
+        self.game.difficulty = level
 
     @overrides
     def init_gui(self, gui: GUI) -> None:
@@ -39,67 +35,55 @@ class ControllerImpl(Controller):
 
     @overrides
     def on_left_click(self, cell_coord: Point2D) -> None:
-        if not self.grid_manager.check_cell_can_be_revealed(cell_coord):
-            return
+        with do_after(self._update_gui):
+            if self.game.reveal_cell_if_possible(cell_coord):
+                self._check_victory_or_defeat(cell_coord)
 
-        self.grid_manager.reveal_cell(cell_coord)
-        if self.grid_manager.get_cell_has_mine(cell_coord):
-            self._stop_game()
-            self.gui.set_grid(self.grid_manager.reveal_all())
+    def _check_victory_or_defeat(self, clicked_cell: Point2D):
+        if self.game.check_cell_has_mine(clicked_cell):
+            self.game.stop_game()
             self.gui.game_over()
-        else:
-            self.gui.set_grid(self.grid_manager.get_grid_for_display())
-            if self.has_won():
-                self._stop_game()
-                self.gui.set_grid(self.grid_manager.reveal_all())
-                self.gui.victory()
+        elif self.game.is_won():
+            self.game.stop_game()
+            self.gui.victory()
 
     @overrides
     def on_right_click(self, cell_coord: Point2D) -> None:
-        if not self.grid_manager.check_cell_can_be_flagged_or_unflagged(cell_coord):
-            return
-
-        self.grid_manager.toggle_flag_cell(cell_coord)
-        self.gui.set_grid(self.grid_manager.get_grid_for_display())
+        with do_after(self._update_gui):
+            self.game.toggle_flag_if_possible(cell_coord)
 
     @overrides
-    def on_new_game(self, difficulty_level: Optional[DifficultyLevel] = None) -> None:
-        if difficulty_level:
-            self.set_difficulty(difficulty_level)
+    def on_new_game(self, difficulty: Optional[DifficultyLevel] = None) -> None:
+        if not difficulty:
+            difficulty = self.game.difficulty
 
-        grid_dim = self.difficulty.grid_dim
-        nbr_mines = self.difficulty.nbr_mines
+        self.game = Game(difficulty=difficulty)
+        self.game.reset_grid(
+            fill_grid_procedure=RandomGridFiller(
+                grid_dim=difficulty.grid_dim,
+                nbr_mines=difficulty.nbr_mines))
+        grid_dim = self.game.difficulty.grid_dim
+        nbr_mines = self.game.difficulty.nbr_mines
 
-        self.grid_manager = GridManager(grid_dim)
-        self.grid_manager.fill_with_mines(
-            nbr_mines=nbr_mines,
-            procedure=RandomGridFiller(grid_dim)
-        )
         self.gui.reset_grid_size(grid_dim)
         self.gui.set_nbr_mines(nbr_mines)
-        self.gui.set_grid(self.grid_manager.get_grid_for_display())
-        self._start_game()
+        self._update_gui()
+        self.game.start_game()
         self.gui.game_starts()
 
-    def has_won(self) -> bool:
-        has_won = self.difficulty.nbr_mines == self.grid_manager.get_count_of_not_revealed_cells()
-        return has_won
-
-    @overrides
+    @ overrides
     def get_nbr_mines(self) -> int:
-        return self.difficulty.nbr_mines
+        return self.game.nbr_mines
 
-    @overrides
+    @ overrides
     def get_current_game_time(self) -> float:
-        if self.game_is_running:
-            return time() - self.game_starting_time
+        if self.game is not None:
+            if self.game.game_is_running:
+                return time() - self.game.game_starting_time
+            else:
+                return self.game.game_ending_time - self.game.game_starting_time
         else:
-            return self.game_ending_time - self.game_starting_time
+            return 0.
 
-    def _start_game(self) -> None:
-        self.game_is_running = True
-        self.game_starting_time = time()
-
-    def _stop_game(self) -> None:
-        self.game_is_running = False
-        self.game_ending_time = time()
+    def _update_gui(self) -> None:
+        self.gui.set_grid(self.game.grid_for_display)

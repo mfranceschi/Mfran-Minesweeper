@@ -1,18 +1,8 @@
-from dataclasses import dataclass
+
 import functools
 import sys
 import typing
 from typing import Any, Optional
-
-
-@dataclass(frozen=True)
-class Point2D:
-    """
-    2D coordinates in a grid.
-    """
-
-    x: int  # pylint: disable=invalid-name
-    y: int  # pylint: disable=invalid-name
 
 
 class ConditionalDecorator:
