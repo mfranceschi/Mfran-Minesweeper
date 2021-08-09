@@ -65,16 +65,16 @@ class ControllerImpl(Controller):
 
     @overrides
     def on_new_game(self, difficulty: Optional[DifficultyLevel] = None) -> None:
-        if not difficulty:
-            difficulty = self.game.difficulty
+        with do_after(self._update_gui):
+            if not difficulty:
+                difficulty = self.game.difficulty
 
-        self.game = Game(difficulty=difficulty)
-        self.game_is_initiated = False
+            self.game = Game(difficulty=difficulty)
+            self.game_is_initiated = False
 
-        self.gui.reset_grid_size(self.game.grid_dim)
-        self.gui.set_nbr_mines(self.game.nbr_mines)
-        self._update_gui()
-        self.gui.game_starts()
+            self.gui.reset_grid_size(self.game.grid_dim)
+            self.gui.set_nbr_mines(self.game.nbr_mines)
+            self.gui.game_starts()
 
     @ overrides
     def get_nbr_mines(self) -> int:
