@@ -33,7 +33,7 @@ class Controller:
     def init_gui(self, gui: GUI) -> None:
         raise NotImplementedError()
 
-    def on_new_game(self, difficulty_level: Optional[DifficultyLevel] = None) -> None:
+    def on_new_game(self, difficulty: Optional[DifficultyLevel] = None) -> None:
         raise NotImplementedError()
 
     def on_left_click(self, cell_coord: Point2D) -> None:

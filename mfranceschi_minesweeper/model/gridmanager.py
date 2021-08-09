@@ -1,9 +1,9 @@
-from typing import Callable, List, Set
+from typing import List, Set
 
 from .cell import Cell, CellValue, CellValueAsString
-from .fill_grid import fill_grid_dummy
+from .dummy_grid import DummyGrid
+from .fill_grid import GridFiller
 from .grid import Grid
-from .grid_impl_with_python_list import GridImplWithPythonList
 from .utils import Point2D
 
 
@@ -12,8 +12,10 @@ class GridManager:
     Manages a grid and provides convenience access methods.
     """
 
+    grid_impl: Grid = DummyGrid
+
     def __init__(self, grid_dim: Point2D):
-        self._grid: Grid = GridImplWithPythonList(grid_dim)
+        self._grid: Grid = self.grid_impl(grid_dim)
         self.nbr_mines = 0
 
     # GETTERS
@@ -48,23 +50,15 @@ class GridManager:
         self._grid[cell_coord.x, cell_coord.y].has_mine = True
 
     # GLOBAL MODIFIERS
-    def fill_with_mines(
-        self,
-        nbr_mines: int = 3,
-        procedure: Callable[[Callable[[Point2D], None],
-                             int], None] = fill_grid_dummy
-    ) -> None:
-        self.nbr_mines = nbr_mines
+    def fill_with_mines(self, grid_filler: GridFiller) -> None:
+        grid_filler(self._set_cell_has_mine)
 
-        procedure(self._set_cell_has_mine, nbr_mines)
-
-        assert len([cell for cell in self._grid if cell.has_mine]) == self.nbr_mines, \
+        assert len([cell for cell in self._grid if cell.has_mine]) == grid_filler.nbr_mines, \
             "Unexpected number of cells with a mine after filling the grid!"
 
-    def reveal_all(self) -> List[CellValue]:
+    def reveal_all(self) -> None:
         for cell in self._grid:
             cell.is_revealed = True
-        return self.get_grid_for_display()
 
     class CellRevealer:  # pylint: disable=too-few-public-methods
         """
