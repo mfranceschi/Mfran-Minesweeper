@@ -57,14 +57,22 @@ class Game:
         if fill_grid_procedure:
             self.grid_manager.fill_with_mines(fill_grid_procedure)
 
-    def reveal(self, cell_coord: Optional[Point2D] = None) -> None:
-        if cell_coord:
-            self.grid_manager.reveal_cell(cell_coord)
-        else:
-            self.grid_manager.reveal_all()
+    def reveal_all(self) -> None:
+        self.grid_manager.reveal_all()
 
-    def toggle_flag(self, cell_coord: Point2D) -> None:
-        self.grid_manager.toggle_flag_cell(cell_coord)
+    def reveal_cell_if_possible(self, cell_coord: Point2D) -> bool:
+        if self.grid_manager.check_cell_can_be_revealed(cell_coord):
+            self.grid_manager.reveal_cell(cell_coord)
+            return True
+        else:
+            return False
+
+    def toggle_flag_if_possible(self, cell_coord: Point2D) -> bool:
+        if self.check_cell_can_be_flagged_or_unflagged(cell_coord):
+            self.grid_manager.toggle_flag_cell(cell_coord)
+            return True
+        else:
+            return False
 
     def start_game(self) -> None:
         """
@@ -81,4 +89,8 @@ class Game:
 
         self.game_is_running = False
         self.game_ending_time = time()
-        self.grid_manager.reveal_all()
+        self.reveal_all()
+
+    def is_won(self) -> bool:
+        count_of_cells_not_revealed = self.grid_manager.get_count_of_not_revealed_cells()
+        return self.nbr_mines == count_of_cells_not_revealed

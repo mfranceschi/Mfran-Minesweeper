@@ -5,6 +5,7 @@ from overrides import overrides
 
 from ..model.fill_grid import RandomGridFiller
 from ..model.utils import Point2D
+from ..utils.action_on_close import do_after
 from ..view.gui import GUI
 
 from .controller import Controller, DifficultyLevel, DifficultyLevels
@@ -35,26 +36,22 @@ class ControllerImpl(Controller):
 
     @overrides
     def on_left_click(self, cell_coord: Point2D) -> None:
-        if not self.game.check_cell_can_be_revealed(cell_coord):
-            return
+        with do_after(self._update_gui):
+            if self.game.reveal_cell_if_possible(cell_coord):
+                self._check_victory_or_defeat(cell_coord)
 
-        self.game.reveal(cell_coord)
-        if self.game.check_cell_has_mine(cell_coord):
-            self._end_game()
+    def _check_victory_or_defeat(self, clicked_cell: Point2D):
+        if self.game.check_cell_has_mine(clicked_cell):
+            self.game.stop_game()
             self.gui.game_over()
-        else:
-            self._update_gui()
-            if self.has_won():
-                self._end_game()
-                self.gui.victory()
+        elif self.game.is_won():
+            self.game.stop_game()
+            self.gui.victory()
 
     @overrides
     def on_right_click(self, cell_coord: Point2D) -> None:
-        if not self.game.check_cell_can_be_flagged_or_unflagged(cell_coord):
-            return
-
-        self.game.toggle_flag(cell_coord)
-        self._update_gui()
+        with do_after(self._update_gui):
+            self.game.toggle_flag_if_possible(cell_coord)
 
     @overrides
     def on_new_game(self, difficulty: Optional[DifficultyLevel] = None) -> None:
@@ -75,25 +72,19 @@ class ControllerImpl(Controller):
         self.game.start_game()
         self.gui.game_starts()
 
-    def has_won(self) -> bool:
-        has_won = self.game.nbr_mines == self.game.count_of_cells_not_revealed
-        return has_won
-
     @ overrides
     def get_nbr_mines(self) -> int:
         return self.game.nbr_mines
 
     @ overrides
     def get_current_game_time(self) -> float:
-        if self.game.game_is_running:
-            return time() - self.game.game_starting_time
+        if self.game is not None:
+            if self.game.game_is_running:
+                return time() - self.game.game_starting_time
+            else:
+                return self.game.game_ending_time - self.game.game_starting_time
         else:
-            return self.game.game_ending_time - self.game.game_starting_time
-
-    def _end_game(self) -> None:
-        self.game.stop_game()
-        self.game.reveal()
-        self._update_gui()
+            return 0.
 
     def _update_gui(self) -> None:
         self.gui.set_grid(self.game.grid_for_display)
