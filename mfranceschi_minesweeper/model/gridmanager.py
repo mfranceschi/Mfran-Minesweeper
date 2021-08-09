@@ -1,10 +1,10 @@
 from typing import ClassVar, List, Set, Type
 
+from ..utils import Point2D
 from .cell import Cell, CellValue, CellValueAsString
 from .dummy_grid import DummyGrid
 from .fill_grid import GridFiller
 from .grid import Grid
-from .utils import Point2D
 
 
 class GridManager:

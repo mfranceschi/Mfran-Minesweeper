@@ -2,9 +2,9 @@ from typing import Iterable, Iterator, List
 
 from overrides.overrides import overrides
 
+from ..utils import Point2D
 from .cell import Cell
 from .grid import Grid
-from .utils import Point2D
 
 
 class GridImplWithPythonList(Grid):

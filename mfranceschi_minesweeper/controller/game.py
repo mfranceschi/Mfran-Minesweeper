@@ -6,7 +6,7 @@ from ..model.dummy_grid import DummyGrid
 from ..model.fill_grid import GridFiller
 from ..model.gridmanager import GridManager
 from ..model.grid_impl_with_python_list import GridImplWithPythonList
-from ..model.utils import Point2D
+from ..utils import Point2D
 from .controller import DifficultyLevel
 
 

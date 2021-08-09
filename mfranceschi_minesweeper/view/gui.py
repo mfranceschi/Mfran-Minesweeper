@@ -4,7 +4,7 @@ from typing import List
 from overrides import EnforceOverrides
 
 from ..model.cell import CellValue
-from ..model.utils import Point2D
+from ..utils import Point2D
 
 
 class GUI(ABC, EnforceOverrides):

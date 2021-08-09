@@ -4,7 +4,7 @@ from typing import Callable, Set, Tuple
 
 from overrides.overrides import overrides
 
-from .utils import Point2D
+from ..utils import Point2D
 
 
 class GridFiller:

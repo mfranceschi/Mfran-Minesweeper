@@ -4,8 +4,7 @@ from typing import Optional
 from overrides import overrides
 
 from ..model.fill_grid import RandomGridFiller
-from ..model.utils import Point2D
-from ..utils.action_on_close import do_after
+from ..utils import do_after, Point2D
 from ..view.gui import GUI
 
 from .controller import Controller, DifficultyLevel, DifficultyLevels
