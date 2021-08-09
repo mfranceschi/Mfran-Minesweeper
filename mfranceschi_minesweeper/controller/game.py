@@ -39,6 +39,12 @@ class Game:
     def grid_for_display(self) -> List[CellValue]:
         return self.grid_manager.get_grid_for_display()
 
+    def get_game_time(self) -> float:
+        if self.game_is_running:
+            return time() - self.game_starting_time
+        else:
+            return self.game_ending_time - self.game_starting_time
+
     def check_cell_can_be_revealed(self, cell_coord: Point2D) -> bool:
         return self.grid_manager.check_cell_can_be_revealed(cell_coord)
 
