@@ -52,7 +52,9 @@ class GridView(tk.Frame):
     def set_grid(self, grid: List[CellValue]) -> None:
         self.cell_values = grid
         for i, value in enumerate(grid):
-            self.buttons[i].set_cell_value(value)
+            button = self.buttons[i]
+            button.set_cell_value(value)
+            # button.widget.grid()
 
     def refresh(self) -> None:
         self.set_grid(self.cell_values)

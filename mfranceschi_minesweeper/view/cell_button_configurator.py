@@ -6,6 +6,7 @@ from overrides.enforce import EnforceOverrides
 
 from ..model.cell import CellValue, CellValueAsString
 from ..utils import FinalDecorator
+from .resources import get_flag_icon, get_mine_icon, get_no_icon
 
 
 class CellButtonConfigurator(ABC, EnforceOverrides):  # pylint: disable=too-few-public-methods
@@ -27,6 +28,12 @@ class CellButtonConfigurator(ABC, EnforceOverrides):  # pylint: disable=too-few-
             assert isinstance(cell_value, int)
             self._configure_for_revealed_with_neighbours(
                 button, nbr=cell_value)
+
+    @FinalDecorator()
+    @staticmethod
+    def set_image(button: tk.Button, image):
+        button.the_image = image  # Ensure no garbage collection
+        button.configure(image=button.the_image)
 
     @abstractmethod
     def _configure_for_not_revealed(self, button: tk.Button):
@@ -54,27 +61,33 @@ class MfranCellButtonConfigurator(CellButtonConfigurator):
 
     @overrides
     def _configure_for_not_revealed(self, button: tk.Button):
-        button.configure(state=tk.NORMAL, text=" ", bg="blue")
+        button.configure(state=tk.NORMAL, text=" ",
+                         bg="blue")
+        self.set_image(button, get_no_icon())
 
     @overrides
     def _configure_for_flagged(self, button: tk.Button):
-        button.configure(state=tk.NORMAL, text=" ", bg="yellow")
+        button.configure(state=tk.NORMAL, text=" ",
+                         bg="yellow")
+        self.set_image(button, get_no_icon())
 
     @overrides
     def _configure_for_mine(self, button: tk.Button):
-        button.configure(state=tk.DISABLED, text=" ", bg="red")
+        button.configure(state=tk.DISABLED, text=" ",
+                         bg="red")
+        self.set_image(button, get_no_icon())
 
     @overrides
     def _configure_for_zero_neighbour(self, button: tk.Button):
-        button.configure(state=tk.DISABLED, text=" ", bg="grey")
+        button.configure(state=tk.DISABLED, text=" ",
+                         bg="grey")
+        self.set_image(button, get_no_icon())
 
     @overrides
     def _configure_for_revealed_with_neighbours(self, button: tk.Button, nbr: int):
-        button.configure(
-            state=tk.DISABLED,
-            text=str(nbr),
-            bg="white",
-        )
+        button.configure(state=tk.DISABLED, text=str(nbr),
+                         bg="white")
+        self.set_image(button, get_no_icon())
 
 
 class WindowsXpCellButtonConfigurator(CellButtonConfigurator):
@@ -84,23 +97,28 @@ class WindowsXpCellButtonConfigurator(CellButtonConfigurator):
     def _configure_for_not_revealed(self, button: tk.Button):
         button.configure(state=tk.NORMAL, text=" ",
                          bg="dark gray")
+        self.set_image(button, get_no_icon())
 
     @overrides
     def _configure_for_flagged(self, button: tk.Button):
-        button.configure(state=tk.NORMAL, text=" ",
+        button.configure(state=tk.NORMAL, text="",
                          bg="yellow")
+        self.set_image(button, get_flag_icon())
 
     @overrides
     def _configure_for_mine(self, button: tk.Button):
-        button.configure(state=tk.DISABLED, text=" ",
+        button.configure(state=tk.DISABLED, text="",
                          bg="red")
+        self.set_image(button, get_mine_icon())
 
     @overrides
     def _configure_for_zero_neighbour(self, button: tk.Button):
         button.configure(state=tk.DISABLED, text=" ",
                          bg="light gray")
+        self.set_image(button, get_no_icon())
 
     @overrides
     def _configure_for_revealed_with_neighbours(self, button: tk.Button, nbr: int):
         button.configure(state=tk.DISABLED, text=str(nbr),
                          bg="white")
+        self.set_image(button, get_no_icon())
