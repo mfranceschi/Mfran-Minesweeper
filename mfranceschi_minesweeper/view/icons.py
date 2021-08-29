@@ -1,6 +1,6 @@
 
 from typing import Optional, Union
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk  # type: ignore
 
 from ..utils import FLAG_ICON_PATH, MINE_ICON_PATH
 
